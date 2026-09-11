@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      :root {
+        --cap-teal: #1a7179;
+        --cap-orange: #eba03b;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      /* Suggerimento a schermo */
+      #ui-hint {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.85);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        z-index: 9998;
+        pointer-events: none;
+        white-space: nowrap;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      /* Il riquadro della traduzione */
+      #museum-card {
+        display: none;
+        position: fixed;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 88%;
+        max-width: 420px;
+        background: rgba(26, 26, 24, 0.95);
+        color: #f5f5f5;
+        border-radius: 12px;
+        border-top: 5px solid var(--cap-teal);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        z-index: 99999;
+        
+        /* IL MIRACOLO DELLO SCROLL */
+        max-height: 55vh; /* Altezza massima: 55% dello schermo */
+        overflow-y: auto; /* Attiva lo scroll se il testo sfora */
+        pointer-events: auto; /* Permette al dito di interagire (scorrere) */
+        
+        padding: 24px;
+        box-sizing: border-box;
+      }
+
+      /* Nascondiamo la barra laterale orrenda di Chrome */
+      #museum-card::-webkit-scrollbar { width: 0px; }
+
+      #museum-card h2 { 
+        color: #ffffff; 
+        margin-top: 0; 
+        font-size: 22px; 
+        margin-bottom: 12px; 
+      }
+      
+      #museum-card p { 
+        font-size: 15px; 
+        line-height: 1.6; 
+        margin: 0 0 14px 0; 
+        color: #d0c7bd; 
+      }
+
+      #museum-card p strong { color: #ffffff; }
+
+      .badge {
+        background: var(--cap-teal);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="ui-hint">📸 Inquadra il pannello</div>
+
+    <!-- Riquadro HTML 2D: molto più stabile e leggibile del 3D -->
+    <div id="museum-card">
+      <span class="badge" id="card-badge">English</span>
+      <h2>Bitter Effects</h2>
+      <p><strong>Overview:</strong> Extensive sugarcane crops are a prime example of this poisoning. Ripeners and other chemicals drift, contaminating everything in their path.</p>
+      <p><strong>Industrial Impact:</strong> Plantations run on industrial logic, ravaging land and driving respiratory diseases through burning. The degradation of soils destroys food sovereignty.</p>
+      <p><strong>Health Crisis:</strong> With so much poison, it's no wonder kidney disease epidemics hit these municipalities. Extensive crops drain groundwater, leaving communities in drought.</p>
+      <!-- Ho aggiunto testo apposta per farti testare lo scroll sul tablet -->
+      <p><em>Scroll down to read more... if this text is cut off, just swipe it!</em></p>
+    </div>
+
+    <!-- LA SCENA AR -->
+    <a-scene mindar-image="imageTargetSrc: ./minds/sala1/targets.mind; filterMinCF: 0.0001; filterBeta: 0.001;" 
+             color-space="sRGB" 
+             renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" 
+             device-orientation-permission-ui="enabled: false">
+      
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      
+      <a-entity id="ar-target" mindar-image-target="targetIndex: 0"></a-entity>
+    </a-scene>
+
+    <script>
+      let isFrozen = false;
+      const targetEntity = document.getElementById('ar-target');
+      const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
+
+      // Quando l'AR aggancia l'immagine sul muro
+      targetEntity.addEventListener('targetFound', () => {
+        if (!isFrozen) {
+          card.style.display = 'block';
+          hint.innerText = "👆 Tocca lo schermo per bloccare la lettura";
+        }
+      });
+
+      // Quando l'AR perde l'immagine
+      targetEntity.addEventListener('targetLost', () => {
+        if (!isFrozen) {
+          card.style.display = 'none';
+          hint.innerText = "📸 Inquadra il pannello";
+        }
+      });
+
+      // Gestione del tocco sullo schermo per congelare/scongelare
+      document.addEventListener('click', (e) => {
+        // Se sto scorrendo col dito DENTRO il testo, non fare nulla (ignora il click)
+        if (card.contains(e.target)) return;
+
+        // Se il testo è visibile, congela o scongela
+        if (card.style.display === 'block') {
+          isFrozen = !isFrozen;
+          
+          if (isFrozen) {
+            // È congelato: cambia il colore per farlo capire all'utente
+            card.style.borderTop = "5px solid var(--cap-orange)";
+            hint.innerText = "🔒 Bloccato. Tocca fuori dal testo per sbloccare.";
+          } else {
+            // È sbloccato: torna al colore normale
+            card.style.borderTop = "5px solid var(--cap-teal)";
+            hint.innerText = "👆 Tocca lo schermo per bloccare la lettura";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
