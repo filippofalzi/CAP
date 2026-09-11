@@ -13,7 +13,6 @@
 
       body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
 
-      /* NUOVO SUGGERIMENTO: in alto, piccolo, elegante */
       #ui-hint {
         display: none; position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
         background: rgba(20, 24, 25, 0.6); color: rgba(255, 255, 255, 0.9); padding: 8px 16px;
@@ -43,25 +42,32 @@
       
       .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; }
       .t1 { color: #442a22; } .i2 { color: #5a382c; } .e3 { color: #9c4533; } .r4 { color: #872a23; } .r5 { color: #5f2821; } .a6 { color: #40241b; }
-      
-      .f1 { color: #c22b10; } .u2 { color: #d94d1a; } .e3f { color: #e87325; } .g4 { color: #f29a35; } .o5 { color: #f7be4d; }
 
-      #dynamic-text p { font-size: 15px; line-height: 1.6; margin: 0 0 14px 0; color: #d0c7bd; }
+      #dynamic-text p { font-size: 15px; line-height: 1.6; margin: 0 0 14px 0; color: #d0c7bd; text-align: center; }
       #dynamic-text p strong { color: #ffffff; }
     </style>
   </head>
   <body>
     
-    <!-- L'elemento esiste, ma parte invisibile -->
     <div id="ui-hint">👆 Tap to lock</div>
+
+    <div id="museum-card">
+      <span class="badge" id="card-badge">English</span>
+      <div id="dynamic-title"></div>
+      <div id="dynamic-text"></div>
+    </div>
 
     <a-scene mindar-image="imageTargetSrc: ./minds/sala1/targets.mind; filterMinCF: 0.0001; filterBeta: 0.001;" 
              color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
+      <!-- Definizioni dei target da 0 a 4 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+      <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
+      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
+      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
     </a-scene>
 
     <script>
@@ -75,16 +81,45 @@
         0: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
-            <p><strong>Overview:</strong> Extensive sugarcane crops are a prime example of this poisoning. Ripeners and other chemicals drift, contaminating everything in their path.</p>
-            <p><strong>Industrial Impact:</strong> Plantations run on industrial logic, ravaging land and driving respiratory diseases through burning.</p>
-            <p><strong>Health Crisis:</strong> With so much poison, it's no wonder kidney disease epidemics hit these municipalities. The degradation of soils destroys food sovereignty.</p>
-           `
+            <p><strong>Ancestral Vision:</strong> Long ago, before this territory was a country called El Salvador, it was inhabited by other populations, known as native peoples. They call the place they live "Our Mother Earth," or <em>Tunan Tal</em> in the <em>náhuat</em> language.</p>
+            <p><em>Tunan Tal</em> is the place where life is created, the place that feeds us and provides water to drink. It holds the resources that allow existence to continue. These native peoples embrace and nourish Nature, knowing they depend entirely on it. On the other hand, the collective unconsciousness of consumerism is depleting these resources.</p>
+            <p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, is one of the most densely populated countries on the continent. Constant population growth demands ever-increasing resources, most of which are hoarded by large corporations. We have broken the balance with our natural environment.</p>
+            <p><em>* Fun Fact:</em> The Kinkajou (or <em>martucha</em>) inhabits the territories of Cabañas and Cinquera. It is just one of many land animals sharing this territory with the human species.</p>
+          `
         },
         1: { 
-          titleHTML: `<h1 class="wall-title"><span class="f1">F</span><span class="u2">U</span><span class="e3f">E</span><span class="g4">G</span><span class="o5">O</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
-            <p><strong>Overview:</strong> Fire drives the industrial logic, ravaging land through burning.</p>
-            <p>Replace this text with your actual translation for the Fire section.</p>
+            <p><strong>A Trunk of Resources:</strong> It seems that today, the Earth is seen merely as a "trunk full of resources" from which we can extract endlessly. The bad news is that whatever comes out of this trunk will eventually run out, and if it runs out, life is impossible.</p>
+            <p><strong>The Reality:</strong> El Salvador does not have much nature to be proud of. It is the second most deforested country in Latin America. Only 1% of the territory is a protected area, compared to the 10% every country should have according to the Convention on Biological Diversity.</p>
+            <p><strong>Rethinking Habits:</strong> Trash and animal waste in the streets are a source of disease. With the rains, all this pollution ends up in lakes, rivers, and seas. It is not enough to simply "recycle"; we must consume less polluting materials.</p>
+            <p><strong>Hope:</strong> In many communities, through ecological farming, they are betting on the rescue of ancestral practices. This is an alternative to make the most of what the land provides and live in harmony with the environment.</p>
+          `
+        },
+        2: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `
+            <p><strong>Historical Context:</strong> Livestock farming began during the <em>Colonia</em>, which brought previously unknown animals: cows, oxen, donkeys, horses, pigs, and hens. Society has always viewed being a rancher with prestige—a role tied to economic power, which makes it difficult to demand environmentally responsible practices.</p>
+            <p><strong>Environmental Deterioration:</strong> Large-scale livestock farming has caused massive deforestation. It requires vast tracts of land with forage and no trees for grazing. Its most visible impact is soil degradation and water pollution.</p>
+            <p><strong>Land Use:</strong> Today, 18% of greenhouse gas emissions are produced by livestock. While 41% of agricultural soil is used for human food crops, 26% is used for cattle pasture and 33% is used to grow grain for animal feed.</p>
+          `
+        },
+        3: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `
+            <p><strong>The Greenhouse Effect:</strong> Various natural gases coexist in the atmosphere, necessary to maintain a good temperature on the Planet. Certain human activities increase the concentration of these gases, unbalancing the natural greenhouse effect. The excess heat is trapped, the earth warms up, and temperatures skyrocket.</p>
+            <p><strong>What makes the heat rise?</strong> 65% comes from nitrous oxide emissions produced by manure. The earth can only absorb 9% of pig excrement; the rest ends up in the air, soil, and drinking water sources. Other causes include methane emissions from ruminant digestion (37%), deforestation for pastures (9%), and burning fossil fuels.</p>
+            <p><strong>The Consequences:</strong> When the air fills with noxious gases, they mix with atmospheric moisture, causing Acid Rain (<em>Lluvia Ácida</em>). This affects marine life and alters soil composition. Furthermore, the excess heat melts the Poles, disrupting ocean currents and threatening all forms of life.</p>
+          `
+        },
+        4: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `
+            <p><strong>The Skin of the Earth:</strong> VEGETATION is to the planet what skin is to our bodies. This green layer maintains the proper temperature, regenerates the air, protects the water, and provides nourishment.</p>
+            <p><strong>The Perfect Circle:</strong> In <em>Parque Nacional El Imposible</em>, oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water. Nature coexists in a perfect circle of giving and receiving, a circle that humanity insists on breaking.</p>
+            <p><strong>Guardians of Nature:</strong> Defying gravity, trees grow towards the light, standing tall as guardians of natural assets. The greenery consumes carbon from the air, transforming it into food, leaves, and trunks; in return, it produces oxygen and cools the environment.</p>
+            <p><strong>Light and Soil:</strong> Foliage feeds on light, serving as food and shelter for other living beings. Below ground, roots protect and filter water, sustaining and nourishing the soils.</p>
+            <p><em>* Rural Life:</em> Domestic ducks (<em>patos domésticos</em>) are a staple of the territory's rural life. They share their home with pigs, hens, goats, other farm animals, and of course, people.</p>
           `
         }
       };
@@ -93,7 +128,6 @@
         if (!isFrozen && exhibitionData[targetIndex]) {
           titleContainer.innerHTML = exhibitionData[targetIndex].titleHTML;
           textContainer.innerHTML = exhibitionData[targetIndex].textHTML;
-          
           card.style.display = 'block';
           hint.style.display = 'block';
           hint.innerText = "👆 Tap to lock";
@@ -107,11 +141,14 @@
         }
       }
 
-      document.getElementById('target-0').addEventListener('targetFound', () => handleTargetFound(0));
-      document.getElementById('target-0').addEventListener('targetLost', handleTargetLost);
-      
-      document.getElementById('target-1').addEventListener('targetFound', () => handleTargetFound(1));
-      document.getElementById('target-1').addEventListener('targetLost', handleTargetLost);
+      // Ciclo automatico per collegare i 5 target (da 0 a 4)
+      for (let i = 0; i < 5; i++) {
+        let targetEl = document.getElementById('target-' + i);
+        if (targetEl) {
+          targetEl.addEventListener('targetFound', () => handleTargetFound(i));
+          targetEl.addEventListener('targetLost', handleTargetLost);
+        }
+      }
 
       document.addEventListener('click', (e) => {
         if (card.contains(e.target)) return;
