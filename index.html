@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tierra | Centro Arte para la Paz</title>
+  <style>
+    :root {
+      --cap-teal: #1a7179;
+    }
+
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      height: 100%; 
+      font-family: 'Helvetica Neue', Arial, sans-serif; 
+      /* Sfondo nudo, color intonaco caldo. Zero immagini pesanti. */
+      background-color: #f2efe9;
+      color: #333;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Il box ora è fluido. Niente altezze fisse che tagliano il testo. */
+    .content-box {
+      max-width: 90%;
+      width: 400px;
+      text-align: center;
+      /* LA MAGIA DELLO SCROLL: limite di altezza (85% dello schermo) e barra automatica */
+      max-height: 85vh;
+      overflow-y: auto;
+      padding-bottom: 20px;
+    }
+
+    /* Nascondiamo la barra di scroll su Chrome per mantenere il minimalismo, lo swipe col dito funziona lo stesso */
+    .content-box::-webkit-scrollbar { width: 0px; }
+
+    .logo-img {
+      width: 100%;
+      max-width: 180px;
+      margin-bottom: 25px;
+    }
+
+    /* RIPRODUZIONE FEDELE DELLA SCRITTA SUL MURO */
+    .wall-title {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 68px;
+      margin: 0;
+      line-height: 0.9;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    /* I toni del mattone applicati chirurgicamente lettera per lettera */
+    .t1 { color: #442a22; } /* Marrone scuro */
+    .i2 { color: #5a382c; } /* Terra bruciata */
+    .e3 { color: #9c4533; } /* Rosso mattone chiaro */
+    .r4 { color: #872a23; } /* Rosso mattone scuro */
+    .r5 { color: #5f2821; } /* Bordò */
+    .a6 { color: #40241b; } /* Marrone scuro */
+
+    .wall-subtitle {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 16px;
+      color: #4c3327;
+      margin-top: 8px;
+      margin-bottom: 35px;
+      letter-spacing: -0.5px;
+    }
+
+    /* Istruzioni riprogettate a mo' di "card" leggere */
+    .instruction {
+      display: flex;
+      align-items: flex-start;
+      text-align: left;
+      margin-bottom: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #555;
+      background: #ffffff;
+      padding: 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      border-left: 4px solid var(--cap-teal);
+    }
+
+    .instruction strong {
+      color: #222;
+      font-size: 15px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .icon { 
+      font-size: 24px; 
+      margin-right: 15px; 
+      line-height: 1.2;
+    }
+
+    .btn {
+      display: block;
+      margin-top: 15px;
+      padding: 16px 32px;
+      background: var(--cap-teal);
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(26, 113, 121, 0.4);
+    }
+
+    .btn:active { 
+      transform: translateY(2px); 
+      box-shadow: 0 2px 5px rgba(26, 113, 121, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="content-box">
+      <!-- Inserisci qui il tuo file logo -->
+      <img src="logo.png" alt="Centro Arte para la Paz Logo" class="logo-img">
+      
+      <!-- La replica della pittura murale -->
+      <h1 class="wall-title">
+        <span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span>
+      </h1>
+      <div class="wall-subtitle">¿De dónde vienen los alimentos?</div>
+      
+      <!-- Istruzioni scorrevoli -->
+      <div class="instruction">
+        <span class="icon">📸</span>
+        <div>
+          <strong>Scan the panels</strong>
+          Point your camera at the exhibition panels to reveal real-time English translations.
+        </div>
+      </div>
+
+      <div class="instruction">
+        <span class="icon">👆</span>
+        <div>
+          <strong>Tap to freeze</strong>
+          Tap the screen at any time to lock the caption in place. You can scroll the text to read it comfortably.
+        </div>
+      </div>
+
+      <!-- Rimando alla telecamera AR -->
+      <a href="ar.html" class="btn">Start Experience</a>
+    </div>
+  </div>
+</body>
+</html>
