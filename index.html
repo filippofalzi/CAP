@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tierra | Centro Arte para la Paz</title>
+  <title>Welcome | Centro Arte para la Paz</title>
   <style>
     :root {
       --cap-teal: #1a7179;
@@ -14,7 +14,6 @@
       padding: 0; 
       height: 100%; 
       font-family: 'Helvetica Neue', Arial, sans-serif; 
-      /* Sfondo nudo, color intonaco caldo. Zero immagini pesanti. */
       background-color: #f2efe9;
       color: #333;
     }
@@ -29,54 +28,43 @@
       box-sizing: border-box;
     }
 
-    /* Il box ora è fluido. Niente altezze fisse che tagliano il testo. */
     .content-box {
       max-width: 90%;
       width: 400px;
       text-align: center;
-      /* LA MAGIA DELLO SCROLL: limite di altezza (85% dello schermo) e barra automatica */
       max-height: 85vh;
       overflow-y: auto;
       padding-bottom: 20px;
     }
 
-    /* Nascondiamo la barra di scroll su Chrome per mantenere il minimalismo, lo swipe col dito funziona lo stesso */
     .content-box::-webkit-scrollbar { width: 0px; }
 
     .logo-img {
       width: 100%;
       max-width: 180px;
-      margin-bottom: 25px;
-    }
-
-    /* RIPRODUZIONE FEDELE DELLA SCRITTA SUL MURO */
-    .wall-title {
-      font-family: 'Impact', 'Arial Black', sans-serif;
-      font-size: 68px;
-      margin: 0;
-      line-height: 0.9;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      margin-bottom: 20px;
     }
     
-    /* I toni del mattone applicati chirurgicamente lettera per lettera */
-    .t1 { color: #442a22; } /* Marrone scuro */
-    .i2 { color: #5a382c; } /* Terra bruciata */
-    .e3 { color: #9c4533; } /* Rosso mattone chiaro */
-    .r4 { color: #872a23; } /* Rosso mattone scuro */
-    .r5 { color: #5f2821; } /* Bordò */
-    .a6 { color: #40241b; } /* Marrone scuro */
-
-    .wall-subtitle {
+    /* Nuovo titolo generale per la stanza */
+    .room-title {
       font-family: 'Arial Black', sans-serif;
-      font-size: 16px;
-      color: #4c3327;
-      margin-top: 8px;
-      margin-bottom: 35px;
-      letter-spacing: -0.5px;
+      font-size: 24px;
+      color: #442a22;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 5px 0;
     }
 
-    /* Istruzioni riprogettate a mo' di "card" leggere */
+    .room-subtitle {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      color: var(--cap-teal);
+      margin-bottom: 30px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
     .instruction {
       display: flex;
       align-items: flex-start;
@@ -129,16 +117,13 @@
 <body>
   <div class="main-container">
     <div class="content-box">
-      <!-- Inserisci qui il tuo file logo -->
-      <img src="logo.png" alt="Centro Arte para la Paz Logo" class="logo-img">
+      <!-- Logo istituzionale -->
+      <img src="logootraprueba-03-2024x1041.png" alt="Centro Arte para la Paz Logo" class="logo-img">
       
-      <!-- La replica della pittura murale -->
-      <h1 class="wall-title">
-        <span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span>
-      </h1>
-      <div class="wall-subtitle">¿De dónde vienen los alimentos?</div>
+      <!-- Intestazione generale, senza riferimenti a un solo elemento -->
+      <h1 class="room-title">Exhibition AR</h1>
+      <div class="room-subtitle">Interactive English Guide</div>
       
-      <!-- Istruzioni scorrevoli -->
       <div class="instruction">
         <span class="icon">📸</span>
         <div>
@@ -155,7 +140,6 @@
         </div>
       </div>
 
-      <!-- Rimando alla telecamera AR -->
       <a href="ar.html" class="btn">Start Experience</a>
     </div>
   </div>
