@@ -62,12 +62,19 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
-      <!-- Definizioni dei target da 0 a 4 -->
+      <!-- Tutti i 12 target mappati da 0 a 11 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
       <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
       <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
+      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
+      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
+      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
+      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
+      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
+      <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
+      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
     </a-scene>
 
     <script>
@@ -80,47 +87,51 @@
       const exhibitionData = {
         0: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `
-            <p><strong>Ancestral Vision:</strong> Long ago, before this territory was a country called El Salvador, it was inhabited by other populations, known as native peoples. They call the place they live "Our Mother Earth," or <em>Tunan Tal</em> in the <em>náhuat</em> language.</p>
-            <p><em>Tunan Tal</em> is the place where life is created, the place that feeds us and provides water to drink. It holds the resources that allow existence to continue. These native peoples embrace and nourish Nature, knowing they depend entirely on it. On the other hand, the collective unconsciousness of consumerism is depleting these resources.</p>
-            <p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, is one of the most densely populated countries on the continent. Constant population growth demands ever-increasing resources, most of which are hoarded by large corporations. We have broken the balance with our natural environment.</p>
-            <p><em>* Fun Fact:</em> The Kinkajou (or <em>martucha</em>) inhabits the territories of Cabañas and Cinquera. It is just one of many land animals sharing this territory with the human species.</p>
-          `
+          textHTML: `<p><strong>Ancestral Vision:</strong> Long ago, before this territory was a country called El Salvador, it was inhabited by native peoples who call their home "Our Mother Earth," or <em>Tunan Tal</em> in the <em>náhuat</em> language.</p>`
         },
         1: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `
-            <p><strong>A Trunk of Resources:</strong> It seems that today, the Earth is seen merely as a "trunk full of resources" from which we can extract endlessly. The bad news is that whatever comes out of this trunk will eventually run out, and if it runs out, life is impossible.</p>
-            <p><strong>The Reality:</strong> El Salvador does not have much nature to be proud of. It is the second most deforested country in Latin America. Only 1% of the territory is a protected area, compared to the 10% every country should have according to the Convention on Biological Diversity.</p>
-            <p><strong>Rethinking Habits:</strong> Trash and animal waste in the streets are a source of disease. With the rains, all this pollution ends up in lakes, rivers, and seas. It is not enough to simply "recycle"; we must consume less polluting materials.</p>
-            <p><strong>Hope:</strong> In many communities, through ecological farming, they are betting on the rescue of ancestral practices. This is an alternative to make the most of what the land provides and live in harmony with the environment.</p>
-          `
+          textHTML: `<p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, is one of the most densely populated countries, where constant growth demands resources that are heavily hoarded by large corporations.</p>`
         },
         2: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `
-            <p><strong>Historical Context:</strong> Livestock farming began during the <em>Colonia</em>, which brought previously unknown animals: cows, oxen, donkeys, horses, pigs, and hens. Society has always viewed being a rancher with prestige—a role tied to economic power, which makes it difficult to demand environmentally responsible practices.</p>
-            <p><strong>Environmental Deterioration:</strong> Large-scale livestock farming has caused massive deforestation. It requires vast tracts of land with forage and no trees for grazing. Its most visible impact is soil degradation and water pollution.</p>
-            <p><strong>Land Use:</strong> Today, 18% of greenhouse gas emissions are produced by livestock. While 41% of agricultural soil is used for human food crops, 26% is used for cattle pasture and 33% is used to grow grain for animal feed.</p>
-          `
+          textHTML: `<p><strong>The Skin of the Earth:</strong> Vegetation maintains the proper temperature, regenerates the air, protects the water, and provides nourishment like a living skin.</p>`
         },
         3: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `
-            <p><strong>The Greenhouse Effect:</strong> Various natural gases coexist in the atmosphere, necessary to maintain a good temperature on the Planet. Certain human activities increase the concentration of these gases, unbalancing the natural greenhouse effect. The excess heat is trapped, the earth warms up, and temperatures skyrocket.</p>
-            <p><strong>What makes the heat rise?</strong> 65% comes from nitrous oxide emissions produced by manure. The earth can only absorb 9% of pig excrement; the rest ends up in the air, soil, and drinking water sources. Other causes include methane emissions from ruminant digestion (37%), deforestation for pastures (9%), and burning fossil fuels.</p>
-            <p><strong>The Consequences:</strong> When the air fills with noxious gases, they mix with atmospheric moisture, causing Acid Rain (<em>Lluvia Ácida</em>). This affects marine life and alters soil composition. Furthermore, the excess heat melts the Poles, disrupting ocean currents and threatening all forms of life.</p>
-          `
+          textHTML: `<p><strong>Guardians of Nature:</strong> Defying gravity, trees grow towards the light, consuming carbon and producing oxygen to cool the environment.</p>`
         },
         4: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `
-            <p><strong>The Skin of the Earth:</strong> VEGETATION is to the planet what skin is to our bodies. This green layer maintains the proper temperature, regenerates the air, protects the water, and provides nourishment.</p>
-            <p><strong>The Perfect Circle:</strong> In <em>Parque Nacional El Imposible</em>, oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water. Nature coexists in a perfect circle of giving and receiving, a circle that humanity insists on breaking.</p>
-            <p><strong>Guardians of Nature:</strong> Defying gravity, trees grow towards the light, standing tall as guardians of natural assets. The greenery consumes carbon from the air, transforming it into food, leaves, and trunks; in return, it produces oxygen and cools the environment.</p>
-            <p><strong>Light and Soil:</strong> Foliage feeds on light, serving as food and shelter for other living beings. Below ground, roots protect and filter water, sustaining and nourishing the soils.</p>
-            <p><em>* Rural Life:</em> Domestic ducks (<em>patos domésticos</em>) are a staple of the territory's rural life. They share their home with pigs, hens, goats, other farm animals, and of course, people.</p>
-          `
+          textHTML: `<p><strong>A Trunk of Resources:</strong> The Earth is often seen merely as a "trunk full of resources" to extract endlessly, forgetting that what comes out of it will eventually run out.</p>`
+        },
+        5: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Deforestation:</strong> El Salvador is the second most deforested country in Latin America, with only 1% of its territory under proper protected area status.</p>`
+        },
+        6: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Waste and Health:</strong> Trash and animal waste in the streets breed disease and wash into lakes, rivers, and seas during the rains. Recycling alone is not enough; we must consume less.</p>`
+        },
+        7: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>The Greenhouse Effect:</strong> Certain human activities increase greenhouse gases, trapping excess heat and causing global temperatures to skyrocket.</p>`
+        },
+        8: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Agricultural Land Use:</strong> 41% of agricultural soil is used for human food crops, 33% for animal feed grain, and 26% for cattle pasture.</p>`
+        },
+        9: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Global Warming & Acid Rain:</strong> Noxious gases mix with atmospheric moisture to create acid rain, while excess heat melts the polar caps and alters marine currents.</p>`
+        },
+        10: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Environmental Deterioration:</strong> Large-scale livestock farming causes massive deforestation, requiring vast tracts of land with forage and no trees, leading to soil degradation.</p>`
+        },
+        11: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `<p><strong>Livestock Impact:</strong> Livestock farming began during the <em>Colonia</em>, bringing unprecedented environmental pressure through extensive ranching and land transformation.</p>`
         }
       };
 
@@ -141,8 +152,8 @@
         }
       }
 
-      // Ciclo automatico per collegare i 5 target (da 0 a 4)
-      for (let i = 0; i < 5; i++) {
+      // Ciclo automatico per collegare tutti i 12 target (da 0 a 11)
+      for (let i = 0; i < 12; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
