@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      :root {
+        --cap-teal: #1a7179;
+        --cap-orange: #eba03b;
+      }
+
+      body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+      #ui-hint {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.85); color: #fff; padding: 12px 24px;
+        border-radius: 30px; font-size: 14px; z-index: 9998; pointer-events: none;
+      }
+
+      #museum-card {
+        display: none; position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
+        width: 88%; max-width: 420px; background: rgba(26, 26, 24, 0.95); color: #f5f5f5;
+        border-radius: 12px; border-top: 5px solid var(--cap-teal);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8); z-index: 99999;
+        max-height: 55vh; overflow-y: auto; pointer-events: auto;
+        padding: 24px; box-sizing: border-box;
+      }
+
+      #museum-card::-webkit-scrollbar { width: 0px; }
+
+      .badge {
+        background: var(--cap-teal); color: white; padding: 4px 8px; border-radius: 4px;
+        font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block;
+      }
+
+      /* Stili per il titolo dinamico in alto nel box AR */
+      #dynamic-title { margin: 0 0 12px 0; }
+      
+      /* GRAFICA TIERRA */
+      .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; }
+      .t1 { color: #442a22; } .i2 { color: #5a382c; } .e3 { color: #9c4533; } .r4 { color: #872a23; } .r5 { color: #5f2821; } .a6 { color: #40241b; }
+      
+      /* GRAFICA FUEGO (Colori caldi/fuoco di esempio) */
+      .f1 { color: #c22b10; } .u2 { color: #d94d1a; } .e3f { color: #e87325; } .g4 { color: #f29a35; } .o5 { color: #f7be4d; }
+
+      #dynamic-text p { font-size: 15px; line-height: 1.6; margin: 0 0 14px 0; color: #d0c7bd; }
+      #dynamic-text p strong { color: #ffffff; }
+    </style>
+  </head>
+  <body>
+    
+    <div id="ui-hint">📸 Inquadra un pannello</div>
+
+    <!-- Riquadro che cambia contenuto dinamicamente -->
+    <div id="museum-card">
+      <span class="badge" id="card-badge">English</span>
+      <div id="dynamic-title"></div>
+      <div id="dynamic-text"></div>
+    </div>
+
+    <!-- SCENA AR -->
+    <a-scene mindar-image="imageTargetSrc: ./minds/sala1/targets.mind; filterMinCF: 0.0001; filterBeta: 0.001;" 
+             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      
+      <!-- Definisci un'entità per ogni immagine che compilerai nel file .mind -->
+      <!-- targetIndex 0 = prima immagine caricata nel file mind -->
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <!-- targetIndex 1 = seconda immagine caricata nel file mind -->
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+    </a-scene>
+
+    <script>
+      let isFrozen = false;
+      const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
+      const titleContainer = document.getElementById('dynamic-title');
+      const textContainer = document.getElementById('dynamic-text');
+
+      // DATABASE DEI CONTENUTI
+      // Qui abbiniamo il numero del target al titolo e al testo corrispondente
+      const exhibitionData = {
+        0: { // Dati per il target 0 (Es: Prima parte di Tierra)
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          textHTML: `
+            <p><strong>Overview:</strong> This is the English text for the Earth section.</p>
+            <p>Scroll down if the text is too long...</p>
+          `
+        },
+        1: { // Dati per il target 1 (Es: Prima parte di Fuego)
+          titleHTML: `<h1 class="wall-title"><span class="f1">F</span><span class="u2">U</span><span class="e3f">E</span><span class="g4">G</span><span class="o5">O</span></h1>`,
+          textHTML: `
+            <p><strong>Overview:</strong> Fire drives the industrial logic, ravaging land through burning.</p>
+          `
+        }
+      };
+
+      // Funzione universale per quando si trova un target
+      function handleTargetFound(targetIndex) {
+        if (!isFrozen && exhibitionData[targetIndex]) {
+          // Inietta il titolo e il testo corretti presi dal database qui sopra
+          titleContainer.innerHTML = exhibitionData[targetIndex].titleHTML;
+          textContainer.innerHTML = exhibitionData[targetIndex].textHTML;
+          
+          card.style.display = 'block';
+          hint.innerText = "👆 Tocca lo schermo per bloccare la lettura";
+        }
+      }
+
+      function handleTargetLost() {
+        if (!isFrozen) {
+          card.style.display = 'none';
+          hint.innerText = "📸 Inquadra un pannello";
+        }
+      }
+
+      // Collega i bersagli 3D al codice
+      document.getElementById('target-0').addEventListener('targetFound', () => handleTargetFound(0));
+      document.getElementById('target-0').addEventListener('targetLost', handleTargetLost);
+      
+      document.getElementById('target-1').addEventListener('targetFound', () => handleTargetFound(1));
+      document.getElementById('target-1').addEventListener('targetLost', handleTargetLost);
+
+      // Blocco/Sblocco touch
+      document.addEventListener('click', (e) => {
+        if (card.contains(e.target)) return;
+        if (card.style.display === 'block') {
+          isFrozen = !isFrozen;
+          card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+          hint.innerText = isFrozen ? "🔒 Bloccato. Tocca fuori per sbloccare." : "👆 Tocca lo schermo per bloccare la lettura";
+        }
+      });
+    </script>
+  </body>
+</html>
