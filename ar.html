@@ -13,6 +13,14 @@
 
       body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
 
+      /* NUOVO SUGGERIMENTO: in alto, piccolo, elegante */
+      #ui-hint {
+        display: none; position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.6); color: rgba(255, 255, 255, 0.9); padding: 8px 16px;
+        border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+        letter-spacing: 0.5px; z-index: 9998; pointer-events: none;
+      }
+
       #museum-card {
         display: none; position: fixed; bottom: 5vh; left: 50%; transform: translateX(-50%);
         width: 90%; max-width: 420px; background: rgba(26, 26, 24, 0.95); color: #f5f5f5;
@@ -43,7 +51,8 @@
   </head>
   <body>
     
-    <!-- IL SUGGERIMENTO È STATO ELIMINATO -->
+    <!-- L'elemento esiste, ma parte invisibile -->
+    <div id="ui-hint">👆 Tap to lock</div>
 
     <div id="museum-card">
       <span class="badge" id="card-badge">English</span>
@@ -63,6 +72,7 @@
     <script>
       let isFrozen = false;
       const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
       const titleContainer = document.getElementById('dynamic-title');
       const textContainer = document.getElementById('dynamic-text');
 
@@ -89,13 +99,17 @@
         if (!isFrozen && exhibitionData[targetIndex]) {
           titleContainer.innerHTML = exhibitionData[targetIndex].titleHTML;
           textContainer.innerHTML = exhibitionData[targetIndex].textHTML;
+          
           card.style.display = 'block';
+          hint.style.display = 'block';
+          hint.innerText = "👆 Tap to lock";
         }
       }
 
       function handleTargetLost() {
         if (!isFrozen) {
           card.style.display = 'none';
+          hint.style.display = 'none';
         }
       }
 
@@ -109,8 +123,8 @@
         if (card.contains(e.target)) return;
         if (card.style.display === 'block') {
           isFrozen = !isFrozen;
-          // Il feedback ora è puramente visivo: cambia solo il colore del bordo
           card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+          hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
         }
       });
     </script>
