@@ -43,10 +43,9 @@
       .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; }
       .t1 { color: #442a22; } .i2 { color: #5a382c; } .e3 { color: #9c4533; } .r4 { color: #872a23; } .r5 { color: #5f2821; } .a6 { color: #40241b; }
 
-      #dynamic-text p { font-size: 15px; line-height: 1.6; margin: 0 0 14px 0; color: #d0c7bd; text-align: center; }
+      #dynamic-text p { font-size: 14px; line-height: 1.5; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
       #dynamic-text p strong { color: #ffffff; }
 
-      /* Stili per la tendina dei dettagli */
       .details-toggle {
         background: transparent; border: 1px solid var(--cap-teal); color: #ffffff;
         padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
@@ -80,15 +79,6 @@
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
-      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
-      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
-      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
-      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
-      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
-      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
-      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
-      <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
-      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
     </a-scene>
 
     <script>
@@ -100,58 +90,33 @@
 
       const exhibitionData = {
         0: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="i2">I</span><span class="e3">R</span><span class="r4">A</span><span class="r5">R</span></h1>`,
           textHTML: `
-            <p><strong>Ancestral Vision:</strong> Long ago, native peoples inhabited this territory, calling it "Our Mother Earth" or <em>Tunan Tal</em> in náhuat.</p>
-            <button class="details-toggle" onclick="toggleDetails()">Read more</button>
-            <div class="details-content">
-              This worldview understood nature as a living entity that provides food and water, keeping a deep balance that modern consumerism has heavily disrupted.
-            </div>
+            <p><strong>Mirar la Tierra:</strong> Exploring local fauna and ecosystems like the kinkajú in Cabañas and domestic animals shaping the rural territory[cite: 10].</p>
+            <p><strong>Cosecha de Oxígeno:</strong> Highlighting the importance of Parque Nacional El Imposible, where oxygen and healthy soils depend on rich vegetation, water sources, and balanced local species[cite: 10].</p>
+            <p><strong>Compañía en Casa:</strong> Domestic ducks and farm animals as part of the rural territory's daily life, sharing space with people, pigs, goats, and chickens[cite: 10].</p>
           `
         },
         1: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, faces high population density and heavy resource hoarding by large corporations.</p>`
+          textHTML: `
+            <p><strong>Tierra que alimenta:</strong> Long before El Salvador, native populations inhabited this land, honoring "Our Mother Earth" (*Tunan Tal*) as the source of life[cite: 11].</p>
+            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
+            <div class="details-content">
+              <strong>Pulgarcito de América:</strong> Highly densely populated area. 60.20% live in urban zones and 39.80% in rural areas, facing heavy resource pressure from large corporations[cite: 11].
+            </div>
+          `
         },
         2: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>The Skin of the Earth:</strong> Vegetation acts like skin, maintaining temperatures, regenerating air, and protecting water sources.</p>`
-        },
-        3: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Guardians of Nature:</strong> Trees grow toward the light, consuming carbon and acting as natural guardians of environmental balance.</p>`
-        },
-        4: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>A Trunk of Resources:</strong> The Earth is wrongly viewed as an endless trunk of resources, ignoring the reality that extraction limits are finite.</p>`
-        },
-        5: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Deforestation:</strong> El Salvador is among the most deforested regions in Latin America, with critical habitat losses annually.</p>`
-        },
-        6: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Waste and Health:</strong> Unchecked trash and contaminants wash into water supplies, worsening public health conditions locally.</p>`
-        },
-        7: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>The Greenhouse Effect:</strong> Human activities increase greenhouse gases, trapping heat and accelerating global temperature spikes.</p>`
-        },
-        8: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Agricultural Land Use:</strong> Land division heavily favors industrial feed and pastures over basic sustainable human crops.</p>`
-        },
-        9: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Global Warming & Acid Rain:</strong> Industrial emissions generate acid rain, degrading regional soils and threatening marine ecosystems.</p>`
-        },
-        10: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Environmental Deterioration:</strong> Large-scale farming models degrade soil structure and deplete underground water sources.</p>`
-        },
-        11: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Livestock Impact:</strong> Historical practices introduced structural strains on native land use through intense ranching models.</p>`
+          titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
+          textHTML: `
+            <p><strong>Piel que cubre la Tierra:</strong> Vegetation acts as the planet's skin, maintaining temperatures, regenerating air, and protecting water resources. Trees stand tall as natural guardians[cite: 2].</p>
+            <p><strong>Ancestral connection:</strong> Native peoples embrace and nurture Nature, knowing they depend absolutely on it[cite: 2]. On the other hand, the collective unconsciousness of consumerism is depleting our resources[cite: 2].</p>
+            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
+            <div class="details-content">
+              <strong>Deforestation Stats:</strong> El Salvador is the second most deforested country in Latin America, with 22% of forests cut down annually. Only 37.9% is considered wooded area, and just 1% enjoys strict protected status[cite: 2].
+            </div>
+          `
         }
       };
 
@@ -160,7 +125,7 @@
         const btn = document.querySelector('.details-toggle');
         if (content) {
           content.classList.toggle('open');
-          btn.innerText = content.classList.contains('open') ? 'Show less' : 'Read more';
+          btn.innerText = content.classList.contains('open') ? 'Show less' : 'Read data';
         }
       }
 
@@ -181,7 +146,7 @@
         }
       }
 
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 3; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
