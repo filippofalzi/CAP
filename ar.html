@@ -45,6 +45,21 @@
 
       #dynamic-text p { font-size: 15px; line-height: 1.6; margin: 0 0 14px 0; color: #d0c7bd; text-align: center; }
       #dynamic-text p strong { color: #ffffff; }
+
+      /* Stili per la tendina dei dettagli */
+      .details-toggle {
+        background: transparent; border: 1px solid var(--cap-teal); color: #ffffff;
+        padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
+        text-transform: uppercase; cursor: pointer; margin-top: 10px; width: 100%;
+        transition: background 0.2s;
+      }
+      .details-toggle:active { background: var(--cap-teal); }
+      
+      .details-content {
+        display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);
+        font-size: 13px; line-height: 1.5; color: #b5aca3; text-align: left;
+      }
+      .details-content.open { display: block; }
     </style>
   </head>
   <body>
@@ -62,7 +77,6 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
-      <!-- Tutti i 12 target mappati da 0 a 11 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
@@ -87,53 +101,68 @@
       const exhibitionData = {
         0: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Ancestral Vision:</strong> Long ago, before this territory was a country called El Salvador, it was inhabited by native peoples who call their home "Our Mother Earth," or <em>Tunan Tal</em> in the <em>náhuat</em> language.</p>`
+          textHTML: `
+            <p><strong>Ancestral Vision:</strong> Long ago, native peoples inhabited this territory, calling it "Our Mother Earth" or <em>Tunan Tal</em> in náhuat.</p>
+            <button class="details-toggle" onclick="toggleDetails()">Read more</button>
+            <div class="details-content">
+              This worldview understood nature as a living entity that provides food and water, keeping a deep balance that modern consumerism has heavily disrupted.
+            </div>
+          `
         },
         1: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, is one of the most densely populated countries, where constant growth demands resources that are heavily hoarded by large corporations.</p>`
+          textHTML: `<p><strong>Overpopulation:</strong> El Salvador, known as the <em>Pulgarcito de América</em>, faces high population density and heavy resource hoarding by large corporations.</p>`
         },
         2: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>The Skin of the Earth:</strong> Vegetation maintains the proper temperature, regenerates the air, protects the water, and provides nourishment like a living skin.</p>`
+          textHTML: `<p><strong>The Skin of the Earth:</strong> Vegetation acts like skin, maintaining temperatures, regenerating air, and protecting water sources.</p>`
         },
         3: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Guardians of Nature:</strong> Defying gravity, trees grow towards the light, consuming carbon and producing oxygen to cool the environment.</p>`
+          textHTML: `<p><strong>Guardians of Nature:</strong> Trees grow toward the light, consuming carbon and acting as natural guardians of environmental balance.</p>`
         },
         4: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>A Trunk of Resources:</strong> The Earth is often seen merely as a "trunk full of resources" to extract endlessly, forgetting that what comes out of it will eventually run out.</p>`
+          textHTML: `<p><strong>A Trunk of Resources:</strong> The Earth is wrongly viewed as an endless trunk of resources, ignoring the reality that extraction limits are finite.</p>`
         },
         5: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Deforestation:</strong> El Salvador is the second most deforested country in Latin America, with only 1% of its territory under proper protected area status.</p>`
+          textHTML: `<p><strong>Deforestation:</strong> El Salvador is among the most deforested regions in Latin America, with critical habitat losses annually.</p>`
         },
         6: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Waste and Health:</strong> Trash and animal waste in the streets breed disease and wash into lakes, rivers, and seas during the rains. Recycling alone is not enough; we must consume less.</p>`
+          textHTML: `<p><strong>Waste and Health:</strong> Unchecked trash and contaminants wash into water supplies, worsening public health conditions locally.</p>`
         },
         7: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>The Greenhouse Effect:</strong> Certain human activities increase greenhouse gases, trapping excess heat and causing global temperatures to skyrocket.</p>`
+          textHTML: `<p><strong>The Greenhouse Effect:</strong> Human activities increase greenhouse gases, trapping heat and accelerating global temperature spikes.</p>`
         },
         8: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Agricultural Land Use:</strong> 41% of agricultural soil is used for human food crops, 33% for animal feed grain, and 26% for cattle pasture.</p>`
+          textHTML: `<p><strong>Agricultural Land Use:</strong> Land division heavily favors industrial feed and pastures over basic sustainable human crops.</p>`
         },
         9: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Global Warming & Acid Rain:</strong> Noxious gases mix with atmospheric moisture to create acid rain, while excess heat melts the polar caps and alters marine currents.</p>`
+          textHTML: `<p><strong>Global Warming & Acid Rain:</strong> Industrial emissions generate acid rain, degrading regional soils and threatening marine ecosystems.</p>`
         },
         10: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Environmental Deterioration:</strong> Large-scale livestock farming causes massive deforestation, requiring vast tracts of land with forage and no trees, leading to soil degradation.</p>`
+          textHTML: `<p><strong>Environmental Deterioration:</strong> Large-scale farming models degrade soil structure and deplete underground water sources.</p>`
         },
         11: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
-          textHTML: `<p><strong>Livestock Impact:</strong> Livestock farming began during the <em>Colonia</em>, bringing unprecedented environmental pressure through extensive ranching and land transformation.</p>`
+          textHTML: `<p><strong>Livestock Impact:</strong> Historical practices introduced structural strains on native land use through intense ranching models.</p>`
         }
       };
+
+      function toggleDetails() {
+        const content = document.querySelector('.details-content');
+        const btn = document.querySelector('.details-toggle');
+        if (content) {
+          content.classList.toggle('open');
+          btn.innerText = content.classList.contains('open') ? 'Show less' : 'Read more';
+        }
+      }
 
       function handleTargetFound(targetIndex) {
         if (!isFrozen && exhibitionData[targetIndex]) {
@@ -152,7 +181,6 @@
         }
       }
 
-      // Ciclo automatico per collegare tutti i 12 target (da 0 a 11)
       for (let i = 0; i < 12; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
