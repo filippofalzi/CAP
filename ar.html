@@ -40,7 +40,10 @@
 
       #dynamic-title { margin: 0 0 12px 0; }
       
-      .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; color: #111111; }
+      .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; }
+      
+      /* Classi per le letterine colorate degli altri target */
+      .t1 { color: #442a22; } .i2 { color: #5a382c; } .e3 { color: #9c4533; } .r4 { color: #872a23; } .r5 { color: #5f2821; } .a6 { color: #40241b; }
 
       #dynamic-text p { font-size: 14px; line-height: 1.5; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
       #dynamic-text p strong { color: #ffffff; }
@@ -93,7 +96,7 @@
 
       const exhibitionData = {
         0: { 
-          titleHTML: `<h1 class="wall-title">Earth, there is only one</h1>`,
+          titleHTML: `<h1 class="wall-title" style="color: #111111; font-size: 24px;">Earth, there is only one</h1>`,
           textHTML: `
             <p>In the middle of the last century, a production model spread that promised more comfort, well-being, and access to food for all people. Large-scale agriculture meant producing much more in less land.</p>
             <p>However, this model was accompanied by an immoderate use of agrochemicals, indiscriminate logging of forests and jungles, water plundering, and contamination of rivers, lakes, and seas. Over the years, it has been ending small-scale raising and cultivation; a millenary practice that ensures livelihood for many rural people. The promise of ending world hunger never became a reality.</p>
@@ -107,7 +110,7 @@
           `
         },
         1: { 
-          titleHTML: `<h1 class="wall-title">MIRAR</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="i2">I</span><span class="e3">R</span><span class="r4">A</span><span class="r5">R</span></h1>`,
           textHTML: `
             <p><strong>Mirar la Tierra</strong><br> Kinkajú or martucha: this mammal species inhabits the territories of Cabañas and Cinquera. It is just one of many terrestrial animals with which the human species shares the same territory.</p>
             <p><strong>Cosecha de Oxígeno</strong><br> El Imposible National Park: oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water. Nature coexists in a perfect circle of giving and receiving, a circle that humanity is determined to break.</p>
@@ -115,7 +118,7 @@
           `
         },
         2: { 
-          titleHTML: `<h1 class="wall-title">TIERRA</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
             <p><strong>Tierra que alimenta</strong><br>Long before El Salvador, native populations inhabited this land, honoring "Our Mother Earth" (*Tunan Tal*) as the source of life.</p>
             <p><strong>Resource demand:</strong> Constant population growth requires an increasingly large demand for resources. Most of these resources are heavily hoarded by large corporations.</p>
@@ -131,7 +134,7 @@
           `
         },
         3: { 
-          titleHTML: `<h1 class="wall-title">PIEL</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
           textHTML: `
             <p><strong>Piel que cubre la Tierra:</strong> vegetation acts as the planet's skin, maintaining temperatures, regenerating air, and protecting water resources. Trees stand tall as natural guardians.</p>
             <p><strong>Ancestral connection:</strong> native peoples embrace and nurture Nature, knowing they depend absolutely on it. On the other hand, the collective unconsciousness of consumerism is depleting our resources.</p>
@@ -142,7 +145,7 @@
           `
         },
         4: { 
-          titleHTML: `<h1 class="wall-title">TIERRA</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">E</span><span class="i2">N</span><span class="e3">T</span><span class="r4">R</span><span class="r5">E</span></h1>`,
           textHTML: `
             <p><strong>Raíces:</strong> Embraced by the earth or cutting through tunnels, roots support the network of soils and transport nourishment. The sap that reaches the highest leaf, flower, or fruit of trees and plants.</p>
             <p><strong>Iguanas in Cinquera:</strong> Life thought of solely as a commodity is part of the environmental imbalance. Placing it at the center means pampering it, respecting its times, its needs, and transforming the relationship with nature.</p>
@@ -150,10 +153,10 @@
           `
         },
         5: { 
-          titleHTML: `<h1 class="wall-title">CAÑALES</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="i2">A</span><span class="e3">Ñ</span><span class="r4">A</span><span class="r5">L</span><span class="a6">E</span><span class="t1">S</span></h1>`,
           textHTML: `
             <p><strong>THE EARTH is like skin.</strong> If a body is moistened every day with insecticide, it is quite likely that it will end up getting sick. The same happens with the earth. It absorbs all the toxins used to irrigate it. The poison accumulates until one day, it becomes infertile and dies.</p>
-            <p><strong>EXTENSIVE SUGARCANE CROPS</strong> are an example of this poisoning. Ripening agents and other chemicals travel to other places, contaminating what is in their path. The poison spreads and renders the lands it touches useless. Family subsistence crops are not free from danger. These environmental destroyers make their way into the soil, water, nearby crops, and people[cite: 14].</p>
+            <p><strong>EXTENSIVE SUGARCANE CROPS</strong> are an example of this poisoning. Ripening agents and other chemicals travel to other places, contaminating what is in their path. The poison spreads and renders the lands it touches useless. Family subsistence crops are not free from danger. These environmental destroyers make their way into the soil, water, nearby crops, and people.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
               <strong>Water & Health Impact:</strong> not only sugarcane causes misuse of land and resources. Irrigated crops are a serious problem, considering the lack of availability and access to quality water in the region. Agrochemicals are used equally in all types of crops, and often without proper protection. With so much poison, it is no wonder the epidemic of kidney failure hitting these municipalities. Extensive crops use large amounts of groundwater, leaving communities in drought.<br><br>
@@ -163,7 +166,7 @@
           `
         },
         6: { 
-          titleHTML: `<h1 class="wall-title">SUELOS</h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="i2">U</span><span class="e3">E</span><span class="r4">L</span><span class="r5">O</span><span class="a6">S</span></h1>`,
           textHTML: `
             <p><strong>LOOKING at the countryside</strong>, one glimpses how agroindustry is destroying the territory. It deteriorates it and fails to meet the food needs of the majority.</p>
             <p><strong>WHAT THE MILPA LEFT BEHIND:</strong> This ancestral practice connects planting with the territory. It is also a way of relating to people. The impact of the Colony drastically modified this custom and opened an unbridgeable gap between subsistence and commercial production. People speak of corn and bean "monocultures".</p>
