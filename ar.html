@@ -78,7 +78,7 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
-      <!-- Tutti gli 11 target da 0 a 10 -->
+      <!-- Tutti gli 11 target da 0 a 11 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
@@ -90,6 +90,7 @@
       <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
       <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
       <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
+      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
     </a-scene>
 
     <script>
@@ -99,7 +100,7 @@
       const titleContainer = document.getElementById('dynamic-title');
       const textContainer = document.getElementById('dynamic-text');
 
-      // Mappatura dei target spezzati (1, 2, 3 puntano a 1; 6, 7, 8 puntano a 6)
+      // Mappatura dei target spezzati orizzontalmente (1, 2, 3 puntano a 1; 6, 7, 8 puntano a 6)
       const targetGroupMapping = {
         1: 1, 2: 1, 3: 1,
         6: 6, 7: 6, 8: 6
@@ -109,14 +110,14 @@
         0: { 
           titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">Earth, there is only one</h1>`,
           textHTML: `
-            <p>In the MIDDLE of the last century, a production model spread that promised more comfort, well-being, and access to food for all people. Large-scale agriculture meant producing much more in less land.</p>
+            <p>In the middle of the last century, a production model spread that promised more comfort, well-being, and access to food for all people. Large-scale agriculture meant producing much more in less land.</p>
             <p>However, this model was accompanied by an immoderate use of agrochemicals, indiscriminate logging of forests and jungles, water plundering, and contamination of rivers, lakes, and seas. Over the years, it has been ending small-scale raising and cultivation; a millenary practice that ensures livelihood for many rural people. The promise of ending world hunger never became a reality.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              The Reality is other: it is nature's response to so many years of devastation. The heat that presses, the rains that do not arrive, the droughts or floods that ruin crops.<br><br>
-              Half a planet more is needed to cover current consumption, by a part of humanity. This demand for resources means: cutting wood before forests grow; extracting water without time for the recharge of sources; the emission of gases, which cannot be absorbed by an increasingly scarce vegetation.<br><br>
-              In El Salvador, 12,000 million m² of rainwater are lost due to deforestation. An average of 4,500 hectares of forests and natural areas are logged per year, responding only to commercial interests.<br><br>
-              <strong>It is time to put life at the center.</strong>
+              <strong>The Reality:</strong> The reality is other, it is nature's response to so many years of devastation. The heat that presses, the rains that do not arrive, the droughts or floods that ruin crops.<br><br>
+              <strong>Resource Demand:</strong> Half a planet more is needed to cover current consumption, by a part of humanity. This demand for resources means: cutting wood before forests grow; extracting water without time for the recharge of sources; the emission of gases, which cannot be absorbed by an increasingly scarce vegetation.<br><br>
+              <strong>El Salvador Data:</strong> In El Salvador, 12,000 million m² of rainwater are lost due to deforestation. An average of 4,500 hectares of forests and natural areas are logged per year, responding only to commercial interests.<br><br>
+              <strong>Conclusion:</strong> It is time to put life at the center.
             </div>
           `
         },
@@ -128,7 +129,7 @@
             <p><strong>Compañía en Casa</strong><br> Domestic ducks: they are part of the rural life of the territory. They share a home with pigs, chickens, goats, other farm animals, and of course, people.</p>
           `
         },
-    4: { 
+        4: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
             <p><strong>THIS WAY of understanding life</strong> stopped being part of our imaginary a long time ago. Not even the people who live in the countryside remember it anymore.</p>
@@ -147,7 +148,7 @@
             </div>
           `
         },
-    5: { 
+        5: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
           textHTML: `
             <p><strong>Piel que cubre la Tierra</strong><br><strong>VEGETATION</strong> is to the planet what skin is to our bodies. This green layer is what maintains the appropriate temperature, regenerates the air, protects water, and nourishes.</p>
@@ -157,16 +158,16 @@
             <p><strong>IT SEEMS that now</strong>, the Earth is only seen as a "chest full of resources", from which to take and take without limit. The bad news is that what comes out of this "chest" runs out, and if it runs out, life is not possible. Rethinking consumption habits is a necessary step to take.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>Ancestral connection:</strong> in many communities, through ecological crops, they are betting on the rescue of ancestral practices. An alternative to take advantage of what the earth gives and live in harmony with the environment.<br><br>
+              <strong>Ancestral connection:</strong> In many communities, through ecological crops, they are betting on the rescue of ancestral practices. An alternative to take advantage of what the earth gives and live in harmony with the environment.<br><br>
               <strong>Deforestation Stats:</strong> El Salvador does not have much nature to be proud of. It is the second most deforested country in Latin America. 22% of forests are cut down annually. Only 37.9% is considered wooded area (this equals 7,995 km²). The 8.29% is occupied by shade-grown coffee plantations, which are counted within the total. This does not guarantee that they are protected areas. Nor is it a guarantee that the rest will not be contaminated or logged. Reliable protection does not exist. Only 1% of the territory is a protected area, compared to the 10% that every country should have, according to the Convention on Biological Diversity.
             </div>
           `
         },
         6: { 
-titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,          
-textHTML: `
+          titleHTML: `<h1 class="wall-title"><span class="t1">E</span><span class="i2">N</span><span class="e3">T</span><span class="r4">R</span><span class="r5">E</span></h1>`,
+          textHTML: `
             <p><strong>Entre el cielo y el suelo</strong><br>Raíces: embraced by the earth or cutting through tunnels, roots support the network of soils and transport nourishment. The sap that reaches the highest leaf, flower, or fruit of trees and plants.</p>
-            <p><strong>La vida en el centro</strong><br>Iguanas in Cinquera: life thought of solely as a commodity is part of the environmental imbalance. Placing it at the center means pampering it, respecting its times, its needs, and transforming the relationship with nature.</p>
+            <p><strong>La vide en el centro</strong><br>Iguanas in Cinquera: life thought of solely as a commodity is part of the environmental imbalance. Placing it at the center means pampering it, respecting its times, its needs, and transforming the relationship with nature.</p>
             <p><strong>Árboles comestibles</strong><br>Succulent branches: planting varied fruit trees ensures their benefits throughout the year and for many years. They provide shade, wood, and are a dietary complement of vitamins, minerals, and sometimes even fats, oils, and proteins.</p>
           `
         },
@@ -198,7 +199,32 @@ textHTML: `
               <strong>Milpa Details:</strong> Milpa: bean, corn, chili, squash. Plants, grains, and fruits are sown and nourish each other. This balanced mixture ensures the harvest, a varied diet, and good use of the land.
             </div>
           `
-        }      
+        },
+        11: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">G</span><span class="i2">A</span><span class="e3">N</span><span class="r4">A</span><span class="r5">D</span><span class="a6">E</span><span class="t1">R</span><span class="i2">Í</span><span class="e3">A</span></h1>`,
+          textHTML: `
+            <p><strong>Sube la temperatura del invernadero</strong><br>In the <strong>ATMOSPHERE</strong> different natural gases coexist, which in adequate proportions are necessary to maintain a good temperature on the Planet.</p>
+            <p>Certain human activities emit and make the concentration of these gases increase. This excess unbalances the natural greenhouse effect and is what produces global warming.</p>
+            <p>The gases do not let excess heat escaping that enters the atmosphere, the heat accumulates, the earth heats up, and temperatures skyrocket.</p>
+            <p><strong>Ganado, granjas y deterioro ambiental:</strong> Large-scale <strong>LIVESTOCK</strong> has been the cause of the deforestation of a considerable amount of forests. It requires large tracts of land with forage and no trees for grazing. The most visible impact is soil degradation and water contamination in livestock production environments.</p>
+            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
+            <div class="details-content">
+              <strong>Greenhouse gas emissions:</strong> 18% of greenhouse gas emissions (CO2) are produced by LIVESTOCK.<br><br>
+              <strong>Agricultural land use:</strong><br>
+              - 26% Pasture for livestock.<br>
+              - 33% Cultivation of grain for concentrated feed.<br>
+              - 41% Cultivation of food for human consumption.<br><br>
+              <strong>What makes heat rise?</strong><br>
+              - 9% Deforestation for pastures.<br>
+              - 37% Methane emissions produced by ruminant digestion.<br>
+              - 65% Nitrous oxide emissions produced by manure. The earth is only capable of absorbing 9% of the excrement from livestock. The rest ends up in the air, the earth, and sources of drinking water.<br><br>
+              <strong>Global Warming & Greenhouse Effect:</strong> Rays penetrate the atmosphere. They are kept inside to achieve an average temperature of 15 degrees. Excess heat is expelled back out. When excess greenhouse gases do not let excess heat out, heat accumulates and temperatures rise. The poles and their white surfaces act as a shield reflecting light. Excess heat causes melting and alters ocean currents.<br><br>
+              <strong>Livestock arrived by sea:</strong> LIVESTOCK at the beginning of the Colony brought hitherto unknown animals: cows, oxen, donkeys, horses, pigs, chickens, and geese. Society has always seen being a cattle rancher as prestigious. A work linked to economic power, which makes it difficult to demand responsible practices with the environment.<br><br>
+              <strong>Acid Rain:</strong> AIR fills with noxious gases that mix with atmospheric moisture. This combination makes rain become acidic. This acidity affects the life of seas and lakes, changes the composition of soils and kills vegetation.<br><br>
+              <strong>Pasture Lands:</strong> Lands destined for pastures have come to occupy almost a quarter of the territory. An inefficient African grass species has been sown that degrades soils.
+            </div>
+          `
+        }
       };
 
       function toggleDetails() {
@@ -229,7 +255,8 @@ textHTML: `
         }
       }
 
-      for (let i = 0; i <= 10; i++) {
+      // Ciclo aggiornato a 12 target (da 0 a 11)
+      for (let i = 0; i <= 11; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
