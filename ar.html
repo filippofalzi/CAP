@@ -68,7 +68,7 @@
     <div id="ui-hint">👆 Tap to lock</div>
 
     <div id="museum-card">
-      <span class="badge" id="card-badge">Español</span>
+      <span class="badge" id="card-badge">English</span>
       <div id="dynamic-title"></div>
       <div id="dynamic-text"></div>
     </div>
@@ -78,7 +78,7 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
-      <!-- Generazione automatica dei 11 target da 0 a 10 -->
+      <!-- Tutti gli 11 target da 0 a 10 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
@@ -99,94 +99,95 @@
       const titleContainer = document.getElementById('dynamic-title');
       const textContainer = document.getElementById('dynamic-text');
 
-      // Mappatura per fare in modo che più target aprano lo stesso identico contenuto (pannelli spezzati)
+      // Mappatura dei target spezzati (1, 2, 3 puntano a 1; 6, 7, 8 puntano a 6)
       const targetGroupMapping = {
-        1: 1, 2: 1, 3: 1, // I pezzi 1, 2 e 3 aprono tutti la sezione MIRAR
-        6: 6, 7: 6, 8: 6  // I pezzi 6, 7 e 8 aprono tutti la sezione ENTRE
+        1: 1, 2: 1, 3: 1,
+        6: 6, 7: 6, 8: 6
       };
 
       const exhibitionData = {
         0: { 
-          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">Tierra, solamente hay una</h1>`,
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">Earth, there is only one</h1>`,
           textHTML: `
-            <p>A mediados del siglo pasado se extendió un modelo de producción que prometía más comodidad, bienestar y acceso al alimento para todas las personas. La agricultura a gran escala suponía producir mucho más en menos tierras.</p>
-            <p>Sin embargo, este modelo venía acompañado de un uso desmedido de agroquímicos, de tala indiscriminada de bosques y selvas, saqueo de agua y contaminación de ríos, lagos y mares. Con los años, ha ido acabando con la crianza y cultivo a pequeña escala; una práctica milenaria que a mucha gente rural les asegura el sustento. La promesa de terminar con el hambre en el mundo, nunca se hizo realidad.</p>
+            <p>In the middle of the last century, a production model spread that promised more comfort, well-being, and access to food for all people. Large-scale agriculture meant producing much more in less land.</p>
+            <p>However, this model was accompanied by an immoderate use of agrochemicals, indiscriminate logging of forests and jungles, water plundering, and contamination of rivers, lakes, and seas. Over the years, it has been ending small-scale raising and cultivation; a millenary practice that ensures livelihood for many rural people. The promise of ending world hunger never became a reality.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>La realidad:</strong> La realidad es otra, es la respuesta de la naturaleza a tantos años de devastación. El calor que aprieta, las lluvias que no llegan, las sequías o inundaciones que malogran las cosechas.<br><br>
-              <strong>Demanda de recursos:</strong> Se necesita medio planeta más, para cubrir el consumo actual, de una parte de la humanidad. Esta demanda de recursos supone: cortar madera antes que crezcan los bosques; extraer agua sin tiempo a la recarga de fuentes; la emisión de gases, que no alcanzan a ser absorbidos por una vegetación cada vez más escasa.<br><br>
-              <strong>Datos de El Salvador:</strong> En El Salvador, se pierden 12,000 millones m² de agua de lluvia a causa de la deforestación. Se tala un promedio de 4,500 hectáreas de bosques y áreas naturales al año, respondiendo sólo a intereses comerciales.<br><br>
-              <strong>Conclusión:</strong> Es hora de poner la vida en el centro.
+              <strong>The Reality:</strong> the reality is other, it is nature's response to so many years of devastation. The heat that presses, the rains that do not arrive, the droughts or floods that ruin crops.<br><br>
+              <strong>Resource Demand:</strong> half a planet more is needed to cover current consumption, by a part of humanity. This demand for resources means: cutting wood before forests grow; extracting water without time for the recharge of sources; the emission of gases, which cannot be absorbed by an increasingly scarce vegetation.<br><br>
+              <strong>El Salvador Data:</strong> in El Salvador, 12,000 million m² of rainwater are lost due to deforestation. An average of 4,500 hectares of forests and natural areas are logged per year, responding only to commercial interests.<br><br>
+              <strong>Conclusion:</strong> It is time to put life at the center.
             </div>
           `
         },
         1: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="i2">I</span><span class="e3">R</span><span class="r4">A</span><span class="r5">R</span></h1>`,
           textHTML: `
-            <p><strong>Mirar la Tierra</strong><br> Kinkajú o martucha: esta especie de mamífero habita territorios de Cabañas y Cinquera. Es sólo uno, de tantos animales terrestres, con los que la especie humana comparte el mismo territorio.</p>
-            <p><strong>Cosecha de Oxígeno</strong><br> Parque Nacional El Imposible: el oxígeno y la buena tierra depende de la vegetación, la vegetación del agua para nutrirse, y del agua dependen las criaturas que la habitan. La naturaleza convive en un círculo perfecto de dar y recibir, un círculo que la humanidad se empeña en romper.</p>
-            <p><strong>Compañía en Casa</strong><br> Patos domésticos: son parte de la vida rural del territorio. Comparten casa con cerdos, gallinas, cabras, otros animales de corral y por supuesto, personas.</p>
+            <p><strong>Mirar la Tierra</strong><br> Kinkajú or martucha: this mammal species inhabits the territories of Cabañas and Cinquera. It is just one of many terrestrial animals with which the human species shares the same territory.</p>
+            <p><strong>Cosecha de Oxígeno</strong><br> El Imposible National Park: oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water. Nature coexists in a perfect circle of giving and receiving, a circle that humanity is determined to break.</p>
+            <p><strong>Compañía en Casa</strong><br> Domestic ducks: they are part of the rural life of the territory. They share a home with pigs, chickens, goats, other farm animals, and of course, people.</p>
           `
         },
         4: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
-            <p><strong>Tierra que alimenta:</strong> El constante crecimiento poblacional requiere una demanda cada vez más grande de recursos. La mayoría de estos recursos son acaparados por las grandes empresas.</p>
+            <p><strong>Tierra que alimenta:</strong> long before El Salvador, native populations inhabited this land, honoring "Our Mother Earth" (*Tunan Tal*) as the source of life.</p>
+            <p><strong>Resource demand:</strong> constant population growth requires an increasingly large demand for resources. Most of these resources are heavily hoarded by large corporations.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>El Pulgarcito de América:</strong> Área muy densamente poblada. El 60.20% vive en zonas urbanas y el 39.80% en zonas rurales.<br><br>
-              <strong>Desglose de recursos:</strong><br>
-              - <strong>Madera:</strong> para construcción y muebles.<br>
-              - <strong>Industria alimentaria:</strong> alimentos para la industria y supermercados.<br>
-              - <strong>Extracción de agua:</strong> agua embotellada, pozos para elaborar gaseosas, jugos, cerveza, etc.<br><br>
-              <strong>Equilibrio roto:</strong> Hemos roto el equilibrio con el entorno natural, el equilibrio entre personas y su hogar territorio.
+              <strong>El Salvador, called "El Pulgarcito de América"</strong> is a highly densely populated area. 60.20% of the population lives in urban zones and 39.80% in rural area.<br><br>
+              <strong>Resource breakdown:</strong><br>
+              - <strong>Wood:</strong> used for construction and furniture.<br>
+              - <strong>Food Industry:</strong> providing supplies for supermarkets.<br>
+              - <strong>Water Extraction:</strong> bottled water and wells for sodas, juices, and beer.<br><br>
+              <strong>Broken Balance:</strong> we have broken the balance with the natural environment, between people and their territorial home.
             </div>
           `
         },
         5: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
           textHTML: `
-            <p><strong>Piel que cubre la Tierra:</strong> la vegetación actúa como la piel del planeta, manteniendo temperaturas, regenerando aire y protegiendo los recursos hídricos. Los árboles se levantan como guardianes naturales.</p>
-            <p><strong>Conexión ancestral:</strong> los pueblos originarios abrazan y nutren la Naturaleza, saben que dependen absolutamente de esta. Por otro lado, la inconsciencia colectiva del consumismo, está acabando con los recursos.</p>
+            <p><strong>Piel que cubre la Tierra:</strong> vegetation acts as the planet's skin, maintaining temperatures, regenerating air, and protecting water resources. Trees stand tall as natural guardians.</p>
+            <p><strong>Ancestral connection:</strong> native peoples embrace and nurture Nature, knowing they depend absolutely on it. On the other hand, the collective unconsciousness of consumerism is depleting our resources.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>Estadísticas de deforestación:</strong> El Salvador es el segundo país más deforestado de América Latina, con un 22% de bosques talados anualmente. Sólo el 37.9% se considera área boscosa. El 8.29% lo ocupan los cafetales bajo sombra, que se cuentan dentro del total. Esto no garantiza que sean áreas protegidas. Tampoco es garantía que el resto no va a ser contaminado ni talado. No existe una protección fiable. Sólo el 1% del territorio es área protegida, frente al 10% que cada país debería tener, según El Convenio sobre Diversidad Biológica.
+              <strong>Deforestation Stats:</strong> El Salvador is the second most deforested country in Latin America, with 22% of forests cut down annually. Only 37.9% is considered wooded area. The 8.29% is occupied by shade-grown coffee plantations, which are included in the total count. This does not guarantee they are protected areas. Nor does it guarantee that the rest will remain free from contamination or logging. Reliable protection does not exist. Only 1% of the territory is a protected area, compared to the 10% that every country should have according to the Convention on Biological Diversity.
             </div>
           `
         },
         6: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">E</span><span class="i2">N</span><span class="e3">T</span><span class="r4">R</span><span class="r5">E</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="R4">R</span><span class="r5">R</span></h1><span class="t1">A</span>`,
           textHTML: `
-            <p><strong>Raíces:</strong> Abrazadas a la tierra o surcando túneles, las raíces sostienen el entramado de los suelos y transportan el alimento. La savia que llega hasta la hoja, la flor o fruto más alto de árboles y plantas.</p>
-            <p><strong>Iguanas en Cinquera:</strong> La vida pensada sólo como mercancía, es parte del desequilibrio ambiental. Ponerla en el centro supone mimarla, respetar sus tiempos, sus necesidades y transformar la relación con la naturaleza.</p>
-            <p><strong>Árboles comestibles:</strong> Plantar frutales variados, es asegurar sus beneficios a lo largo del año, y por muchos años. Dan sombra, madera, son un complemento alimenticio de vitaminas, minerales y algunos: hasta de grasas, aceites y proteínas.</p>
+            <p><strong>Entre el cielo y el suelo</strong><br>Raíces: embraced by the earth or cutting through tunnels, roots support the network of soils and transport nourishment. The sap that reaches the highest leaf, flower, or fruit of trees and plants.</p>
+            <p><strong>La vida en el centro</strong><br>Iguanas in Cinquera: life thought of solely as a commodity is part of the environmental imbalance. Placing it at the center means pampering it, respecting its times, its needs, and transforming the relationship with nature.</p>
+            <p><strong>Árboles comestibles</strong><br>Succulent branches: planting varied fruit trees ensures their benefits throughout the year and for many years. They provide shade, wood, and are a dietary complement of vitamins, minerals, and sometimes even fats, oils, and proteins.</p>
           `
         },
         9: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="i2">A</span><span class="e3">Ñ</span><span class="r4">A</span><span class="r5">L</span><span class="a6">E</span><span class="t1">S</span></h1>`,
           textHTML: `
-            <p><strong>LA TIERRA es como una piel.</strong> Si un cuerpo se humedece cada día con insecticida, es bastante probable, que termine enfermando. Con la tierra pasa igual. Va absorbiendo todos los tóxicos que la riegan. El veneno se acumula, hasta que un día, se vuelve infértil y muere.</p>
-            <p><strong>LOS CULTIVOS extensivos de caña</strong> son ejemplo de este envenenamiento. Madurantes y otros químicos que se van a otros lugares, contaminando lo que está a su paso. El veneno se esparce y deja inservibles las tierras que toca. Las siembras familiares de subsistencia, no están libres de peligro. Estos destructores ambientales se van metiendo en la tierra, el agua, los cultivos cercanos y las personas.</p>
+            <p><strong>THE EARTH is like skin.</strong><br> If a body is moistened every day with insecticide, it is quite likely that it will end up getting sick. The same happens with the earth. It absorbs all the toxins used to irrigate it. The poison accumulates until one day, it becomes infertile and dies.</p>
+            <p><strong>EXTENSIVE SUGARCANE CROPS</strong> are an example of this poisoning. Ripening agents and other chemicals travel to other places, contaminating what is in their path. The poison spreads and renders the lands it touches useless. Family subsistence crops are not free from danger. These environmental destroyers make their way into the soil, water, nearby crops, and people.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>Impacto en agua y salud:</strong> No sólo la caña ocasiona un mal uso de la tierra y los recursos. Los cultivos a base de regadío son un serio problema, si se toma en cuenta, la falta de disponibilidad y acceso al agua de calidad que existe en la región. Los agroquímicos se usan igualmente en todo tipo de cultivo, y muchas veces, sin la protección adecuada. Con tanto veneno, no es de extrañar la epidemia de insuficiencia renal, que golpea estos municipios. Los cultivos extensivos usan grandes cantidades de aguas subterráneas, que dejan en sequía a las comunidades.<br><br>
-              <strong>La dulzura del trapiche:</strong> Los derivados del jugo de caña que ofrece un trapiche, son naturales y libres de agroquímicos. La producción es artesanal, a pequeña escala y no necesita la quema para cosechar; además promueve el consumo local. La panela endulza y mantiene los beneficios propios del jugo de caña, los cuales se pierden en el proceso del azúcar refinada.<br><br>
-              <strong>Caña asiática:</strong> La caña no es originaria de América, ni era parte de la dieta de los pueblos originarios. La trajo Cristóbal Colón desde Asia. El uso de sus derivados despertó el interés comercial y comenzó su exportación a Europa. Desde entonces, los Ingenios compran a precios injustos las pequeñas producciones; acabando con otras maneras de consumo local.
+              <strong>Water & Health Impact:</strong> not only sugarcane causes misuse of land and resources. Irrigated crops are a serious problem, considering the lack of availability and access to quality water in the region. Agrochemicals are used equally in all types of crops, and often without proper protection. With so much poison, it is no wonder the epidemic of kidney failure hitting these municipalities. Extensive crops use large amounts of groundwater, leaving communities in drought.<br><br>
+              <strong>The Trapiche:</strong> the derivatives of sugarcane juice offered by a traditional sugar mill (*trapiche*) are natural and free of agrochemicals. Production is artisanal, small-scale, and does not require burning to harvest; furthermore, it promotes local consumption. Panela sweetens and maintains the inherent benefits of sugarcane juice, which are lost in the refined sugar process.<br><br>
+              <strong>Asian Sugarcane:</strong> sugarcane is not native to America, nor was it part of the diet of native peoples. Christopher Columbus brought it from Asia. The use of its derivatives awakened commercial interest and its exportation to Europe began. Since then, sugar mills buy small productions at unfair prices, destroying other ways of local consumption.
             </div>
           `
         },
         10: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="i2">U</span><span class="e3">E</span><span class="r4">L</span><span class="r5">O</span><span class="a6">S</span></h1>`,
           textHTML: `
-            <p><strong>AL MIRAR el campo</strong>, se vislumbra como la agroindustria está acabando con el territorio. Lo deteriora y no llega a solventar las necesidades alimentarias de la mayoría.</p>
-            <p><strong>LO QUE LA MILPA DEJÓ:</strong> Esta práctica ancestral conecta la siembra con el territorio. Es también, una manera de relacionarse con las personas. El impacto de la Colonia modificó drásticamente esta costumbre y abrió una brecha insalvable entre producción de subsistencia y comercial. Se habla de "monocultivos" de maíz y frijol.</p>
+            <p><strong>LOOKING at the countryside</strong>, one glimpses how agroindustry is destroying the territory. It deteriorates it and fails to meet the food needs of the majority.</p>
+            <p><strong>WHAT THE MILPA LEFT BEHIND:</strong> this ancestral practice connects planting with the territory. It is also a way of relating to people. The impact of the Colony drastically modified this custom and opened an unbridgeable gap between subsistence and commercial production. People speak of corn and bean "monocultures".</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong>Modelo de agroindustria:</strong> ¿Es esta la mejor manera de alimentar un territorio? ¿A quiénes favorece este modelo? El 80% del territorio lo ocupan los sistemas de agricultura industrial, a base de monocultivos.<br><br>
-              <strong>Ecuación de la agroindustria:</strong> Tala de bosques + Avance de la agroindustria + Uso suelo para pastos + Monocultivos = Deforestación, Degradación de suelos, Escasez de Alimento.<br><br>
-              <strong>Desglose:</strong> 22% Pastos solos, 19% Granos básicos, 10% Café, 5% Caña, 17% Otros cultivos.<br><br>
-              <strong>Iniciativas locales y naturaleza:</strong> Cultivo de caña y trapiche en San Antonio, Municipio de Suchitoto. Con esta iniciativa se mantiene una tradición que promueve la soberanía de los cultivos y ofrece productos sanos a la comunidad. Los bosques y selvas tropicales están repletos de frutos y medicinas. Llenan de sabor las mesas y complementan la alimentación.<br><br>
-              <strong>Detalles de la Milpa:</strong> Milpa: frijol, maíz, chile, ayote. Se siembran plantas, granos y frutas que se van nutriendo entre ellas. Esta mezcla equilibrada asegura la cosecha, una alimentación variada y buen uso de la tierra.
+              <strong>Agroindustry Model:</strong> is this the best way to feed a territory? Who does this model favor? 80% of the territory is occupied by industrial agriculture systems based on monocultures.<br><br>
+              <strong>Agroindustry Equation:</strong> Deforestation +<br>Advance of agroindustry +<br>Land use for pasture +<br>Monocultures<br> = Deforestation, Soil degradation, Food scarcity.<br><br>
+              <strong>Breakdown:</strong> 22% Sole pastures, 19% Basic grains, 10% Coffee, 5% Caña (Sugarcane), 17% Other crops.<br><br>
+              <strong>Local Initiatives & Nature:</strong> sugarcane cultivation and traditional sugar mill in San Antonio, Municipality of Suchitoto. This initiative maintains a tradition that promotes crop sovereignty and offers healthy products to the community. Tropical forests and jungles are full of fruits and medicines. They fill tables with flavor and complement nutrition.<br><br>
+              <strong>Milpa Details:</strong> bean, corn, chili, squash. Plants, grains, and fruits are sown and nourish each other. This balanced mixture ensures the harvest, a varied diet, and good use of the land.
             </div>
           `
         }
@@ -202,7 +203,6 @@
       }
 
       function handleTargetFound(targetIndex) {
-        // Controlla se il target fa parte di un gruppo mappato, altrimenti usa l'indice diretto
         let dataKey = targetGroupMapping[targetIndex] !== undefined ? targetGroupMapping[targetIndex] : targetIndex;
 
         if (!isFrozen && exhibitionData[dataKey]) {
@@ -221,7 +221,6 @@
         }
       }
 
-      // Ciclo aggiornato a 11 target (da 0 a 10)
       for (let i = 0; i <= 10; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
