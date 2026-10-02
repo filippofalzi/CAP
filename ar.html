@@ -78,7 +78,7 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       
-      <!-- Tutti gli 11 target da 0 a 11 -->
+      <!-- Tutti i 13 target da 0 a 12 -->
       <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
@@ -91,6 +91,7 @@
       <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
       <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
       <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
+      <a-entity id="target-12" mindar-image-target="targetIndex: 12"></a-entity>
     </a-scene>
 
     <script>
@@ -100,10 +101,10 @@
       const titleContainer = document.getElementById('dynamic-title');
       const textContainer = document.getElementById('dynamic-text');
 
-      // Mappatura dei target spezzati orizzontalmente (1, 2, 3 puntano a 1; 6, 7, 8 puntano a 6)
+      // Mappatura dei target spezzati orizzontalmente (aggiornata con i nuovi indici slittati)
       const targetGroupMapping = {
-        1: 1, 2: 1, 3: 1,
-        6: 6, 7: 6, 8: 6
+        2: 2, 3: 2, 4: 2,
+        7: 7, 8: 7, 9: 7
       };
 
       const exhibitionData = {
@@ -122,6 +123,22 @@
           `
         },
         1: { 
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 22px;">With a breath, millions of years of life are extinguished</h1>`,
+          textHTML: `
+            <p><strong>THE EARTH is the only planet with life</strong> that we know of in the Universe. All the complexity it encloses is the spectacular result of a chain of transformations, in which fire, water, wind, and rock particles conspired until reaching here, the place we now inhabit.</p>
+            <p><strong>5,000 million years ago</strong>, the planet was only a cauldron of fire. Water crystal meteorites collided and formed the oceans. Every sip, every puddle, every drop is billions of years old.</p>
+            <p>Volcanoes spit lava, which upon cooling formed the terrestrial surface. More meteorites filled water with life, making aquatic creatures flourish. Some creatures crawled onto the ground to make it their home, and thus evolved, each from the rest of species.</p>
+            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
+            <div class="details-content">
+              <strong>Atmosphere & Vegetation:</strong> Light in the water manufactures oxygen that transforms into atmosphere. Millions of years later the ozone layer formed; indispensable to absorb the lethal radiation of the Sun and make plant growth possible. Wind was in charge of distributing the seeds that propagated vegetation.<br><br>
+              <strong>Earth's balance:</strong> Earth is finished 20 million years ago. A blue ball full of greens that oxygenate, earth that nourishes, and heat that transforms.<br><br>
+              <strong>Human impact:</strong> It took an incalculable time to forge itself and find balance, and in less than a century, humanity may be responsible for the next great extinction of life.<br><br>
+              <strong>Accelerated deterioration:</strong> The present image is of accelerated deterioration, possibly due to the uncontrollable thirst for resources. Resources that Earth took millions of years to form and that are running out.<br><br>
+              <strong>Shared responsibility:</strong> The responsibility to change course is shared; after all, Earth will survive 4,500 million years more and will know how to regenerate without humanity.
+            </div>
+          `
+        },
+        2: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="i2">I</span><span class="e3">R</span><span class="r4">A</span><span class="r5">R</span></h1>`,
           textHTML: `
             <p><strong>Mirar la Tierra</strong><br> Kinkajú or martucha: this mammal species inhabits the territories of Cabañas and Cinquera. It is just one of many terrestrial animals with which the human species shares the same territory.</p>
@@ -129,7 +146,7 @@
             <p><strong>Compañía en Casa</strong><br> Domestic ducks: they are part of the rural life of the territory. They share a home with pigs, chickens, goats, other farm animals, and of course, people.</p>
           `
         },
-        4: { 
+        5: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
             <p><strong>LONG AGO</strong>, before this territory was a country called El Salvador, it was inhabited by other populations. The native peoples name the place where they live as "Our Mother Earth", in Nahuat <i>Tunan Tal</i>. <i>Tunan Tal</i> is the place where life is created, the place that feeds and provides water to drink. It is the place that guards the goods that allow the continuity of existence throughout the length, breadth, and roundness of the Earth.</p>
@@ -147,7 +164,7 @@
             </div>
           `
         },
-        5: { 
+        6: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
           textHTML: `
             <p><strong>Piel que cubre la Tierra</strong><br><strong>VEGETATION</strong> is to the planet what skin is to our bodies. This green layer is what maintains the appropriate temperature, regenerates the air, protects water, and nourishes.</p>
@@ -161,7 +178,7 @@
             </div>
           `
         },
-        6: { 
+        7: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
           textHTML: `
             <p><strong>Entre el cielo y el suelo</strong><br>Raíces: embraced by the earth or cutting through tunnels, roots support the network of soils and transport nourishment. The sap that reaches the highest leaf, flower, or fruit of trees and plants.</p>
@@ -169,21 +186,21 @@
             <p><strong>Árboles comestibles</strong><br>Succulent branches: planting varied fruit trees ensures their benefits throughout the year and for many years. They provide shade, wood, and are a dietary complement of vitamins, minerals, and sometimes even fats, oils, and proteins.</p>
           `
         },
-        9: { 
+        10: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="i2">A</span><span class="e3">Ñ</span><span class="r4">A</span><span class="r5">L</span><span class="a6">E</span><span class="t1">S</span></h1>`,
           textHTML: `
             <p><strong>No tan dulces los cañales</strong><br><strong>THE EARTH is like skin.</strong> If a body is moistened every day with insecticide, it is quite likely that it will end up getting sick. The same happens with the earth. It absorbs all the toxins used to irrigate it. The poison accumulates until one day, it becomes infertile and dies.</p>
             <p><strong>Amargos Efectos</strong><br><strong>EXTENSIVE SUGARCANE CROPS</strong> are an example of this poisoning. Ripening agents and other chemicals travel to other places, contaminating what is in their path. The poison spreads and renders the lands it touches useless. Family subsistence crops are not free from danger.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
-              <strong> Sugarcane plantations with industrial logic:</strong> it ravages land, drags respiratory diseases due to burning and the use of agrochemicals. Soil wear and massive deforestation impact and produce a loss in the food sovereignty of peoples.<br><br>
+              <strong>Sugarcane plantations with industrial logic:</strong> it ravages land, drags respiratory diseases due to burning and the use of agrochemicals. Soil wear and massive deforestation impact and produce a loss in the food sovereignty of peoples.<br><br>
               <strong>Water & Health Impact:</strong> not only sugarcane causes misuse of land and resources. Irrigated crops are a serious problem, considering the lack of availability and access to quality water in the region. Agrochemicals are used equally in all types of crops, and often without proper protection. With so much poison, it is no wonder the epidemic of kidney failure hitting these municipalities. Extensive crops use large amounts of groundwater, leaving communities in drought.<br><br>
               <strong>The Trapiche:</strong> <strong>THE DERIVATIVES of sugarcane juice</strong> offered by a traditional sugar mill (*trapiche*) are natural and free of agrochemicals. Production is artisanal, small-scale, and does not require burning to harvest; furthermore, it promotes local consumption. <br><br>
               <strong>Asian Sugarcane:</strong> <strong>SUGARCANE is not native</strong> to America, nor was it part of the diet of native peoples. Christopher Columbus brought it from Asia. The use of its derivatives awakened commercial interest and its exportation to Europe began. Since then, sugar mills buy small productions at unfair prices, destroying other ways of local consumption.
             </div>
           `
         },
-        10: { 
+        11: { 
           titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="i2">U</span><span class="e3">E</span><span class="r4">L</span><span class="r5">O</span><span class="a6">S</span></h1>`,
           textHTML: `
             <p><strong>Suelos para comer</strong><br><strong>LOOKING at the countryside</strong>, one glimpses how agroindustry is destroying the territory.</p>
@@ -198,13 +215,13 @@
             </div>
           `
         },
-        11: { 
-        titleHTML: `<h1 class="wall-title"><span class="t1">L</span><span class="i2">I</span><span class="e3">V</span><span class="r4">E</span><span class="r5">S</span><span class="a6">T</span><span class="t1">O</span><span class="i2">C</span><span class="e3">K</span></h1>`,
-        textHTML: `
+        12: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">L</span><span class="i2">I</span><span class="e3">V</span><span class="r4">E</span><span class="r5">S</span><span class="a6">T</span><span class="t1">O</span><span class="i2">C</span><span class="e3">K</span></h1>`,
+          textHTML: `
             <p>In the <strong>ATMOSPHERE</strong> different natural gases coexist, which in adequate proportions are necessary to maintain a good temperature on the Planet.</p>
             <p>Certain human activities emit and make the concentration of these gases increase. This excess unbalances the natural greenhouse effect and is what produces global warming.</p>
             <p>The gases do not let excess heat escaping that enters the atmosphere, the heat accumulates and the earth heats up.</p>
-            <p></strong> Large-scale <strong>LIVESTOCK</strong> has been the cause of the deforestation of a considerable amount of forests. It requires large tracts of land with forage and no trees for grazing. The most visible impact is soil degradation and water contamination in livestock production environments.</p>
+            <p>Large-scale <strong>LIVESTOCK</strong> has been the cause of the deforestation of a considerable amount of forests. It requires large tracts of land with forage and no trees for grazing. The most visible impact is soil degradation and water contamination in livestock production environments.</p>
             <button class="details-toggle" onclick="toggleDetails()">Read data</button>
             <div class="details-content">
               <strong>Greenhouse gas emissions:</strong> 18% of greenhouse gas emissions (CO2) are produced by LIVESTOCK.<br><br>
@@ -252,8 +269,8 @@
         }
       }
 
-      // Ciclo aggiornato a 12 target (da 0 a 11)
-      for (let i = 0; i <= 11; i++) {
+      // Ciclo aggiornato a 13 target (da 0 a 12)
+      for (let i = 0; i <= 12; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
