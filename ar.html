@@ -13,6 +13,14 @@
 
       body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
 
+      .mindar-ui-overlay, .mindar-ui-scanning, .mindar-ui-loading {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+      
       #ui-hint {
         display: none; position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
         background: rgba(20, 24, 25, 0.6); color: rgba(255, 255, 255, 0.9); padding: 8px 16px;
