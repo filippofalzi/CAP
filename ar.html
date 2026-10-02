@@ -13,13 +13,13 @@
 
       body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
 
-      /*.mindar-ui-overlay, .mindar-ui-scanning, .mindar-ui-loading {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+   /* Sposta al centro il riquadro grafico di scansione di MindAR senza rompere lo script */
+      .mindar-ui-scanning {
+        position: fixed !important;
+        top: 50% !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
-      }*/
+        transform: translate(-50%, -50%) !important;
+      }
       
       #ui-hint {
         display: none; position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
