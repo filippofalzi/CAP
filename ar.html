@@ -107,8 +107,8 @@
       <a-entity id="target-19" mindar-image-target="targetIndex: 19"></a-entity>
       <a-entity id="target-23" mindar-image-target="targetIndex: 23"></a-entity>
       <a-entity id="target-24" mindar-image-target="targetIndex: 24"></a-entity>
-      <a-entity id="target-24" mindar-image-target="targetIndex: 25"></a-entity>
-      <a-entity id="target-24" mindar-image-target="targetIndex: 25"></a-entity>
+      <a-entity id="target-25" mindar-image-target="targetIndex: 25"></a-entity>
+      <a-entity id="target-28" mindar-image-target="targetIndex: 28"></a-entity>
      
      
     </a-scene>
@@ -393,7 +393,7 @@
                   <p><strong>Mirror of Water (Laguna de Olomega):</strong> this protected natural area is the largest freshwater space in the eastern region. It is the reflection of vegetation that protects water and land, along with every species that inhabits and feeds on it.</p>
                 `
             },
-            26: { 
+            28: { 
               titleHTML: `<h1 class="wall-title" style="color: #1e6b7b; font-size: 24px;">El agua y el cemento</h1>`,
               textHTML: `
                 <p><strong>MOST</strong> of the surface of this great blue bowl is covered with water. This substance, devoid of odor, flavor, and color, is the indispensable element to ensure the life of the planet.</p>
@@ -446,8 +446,7 @@
         }
       }
 
-      // Ciclo aggiornato a 19 target (da 0 a 18)
-      for (let i = 0; i <= 18; i++) {
+      for (let i = 0; i <= 28; i++) {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
