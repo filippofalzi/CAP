@@ -121,10 +121,12 @@
       const textContainer = document.getElementById('dynamic-text');
 
       // Mappatura dei target spezzati orizzontalmente
-      const targetGroupMapping = {
+    const targetGroupMapping = {
         2: 2, 3: 2, 4: 2,
         7: 7, 8: 7, 9: 7,
-        13: 13, 14: 13, 15: 13
+        13: 13, 14: 13, 15: 13,
+        20: 19, 21: 19, 22:19,
+        26: 25, 27: 25
       };
 
       const exhibitionData = {
@@ -446,13 +448,15 @@
         }
       }
 
-      for (let i = 0; i <= 28; i++) {
+      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 23, 24, 25, 28];
+      
+      activeTargets.forEach(i => {
         let targetEl = document.getElementById('target-' + i);
         if (targetEl) {
           targetEl.addEventListener('targetFound', () => handleTargetFound(i));
           targetEl.addEventListener('targetLost', handleTargetLost);
         }
-      }
+      });
 
       document.addEventListener('click', (e) => {
         if (card.contains(e.target)) return;
