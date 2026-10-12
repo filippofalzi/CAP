@@ -42,12 +42,16 @@
       
       .wall-title { font-family: 'Impact', sans-serif; font-size: 34px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; }
       
-      .t1 { color: #442a22; } .i2 { color: #5a382c; } .e3 { color: #9c4533; } .r4 { color: #872a23; } .r5 { color: #5f2821; } .a6 { color: #40241b; }
+      /* Terra / Marroni */
+      .t1 { color: #442a22; } .t2 { color: #5a382c; } .t3 { color: #9c4533; } .t4 { color: #872a23; } .t5 { color: #5f2821; } .t6 { color: #40241b; }
 
-      .f1 { color: #822b27; } .f2 { color: #803126; } .f3 { color: #872e25; } .f4 { color: #9c6828; }
+      /* Fuoco / Rossi-Arancio */
+      .f1 { color: #822b27; } .f2 { color: #9c4533; } .f3 { color: #b85d29; } .f4 { color: #eba03b; }
 
+      /* Aria / Verdi */
       .a1 { color: #5a733e; } .a2 { color: #3b5c32; } .a3 { color: #234728; } .a4 { color: #183820; } 
 
+      /* Acqua / Azzurri-Blu */
       .w1 { color: #1e6b7b; } .w2 { color: #288494; } .w3 { color: #1a5c68; } .w4 { color: #12404b; }
       
       #dynamic-text p { font-size: 18px; line-height: 1.6; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
@@ -83,7 +87,7 @@
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
       <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
       <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
       <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
@@ -105,6 +109,7 @@
       <a-entity id="target-19" mindar-image-target="targetIndex: 19"></a-entity>
       <a-entity id="target-20" mindar-image-target="targetIndex: 20"></a-entity>
       <a-entity id="target-21" mindar-image-target="targetIndex: 21"></a-entity>
+      <a-entity id="target-22" mindar-image-target="targetIndex: 22"></a-entity>
       <a-entity id="target-23" mindar-image-target="targetIndex: 23"></a-entity>
       <a-entity id="target-24" mindar-image-target="targetIndex: 24"></a-entity>
       <a-entity id="target-25" mindar-image-target="targetIndex: 25"></a-entity>
@@ -120,14 +125,12 @@
       const titleContainer = document.getElementById('dynamic-title');
       const textContainer = document.getElementById('dynamic-text');
 
-const targetGroupMapping = {
+      const targetGroupMapping = {
         2: 2, 3: 2, 4: 2,
         7: 7, 8: 7, 9: 7,
         13: 13, 14: 13, 15: 13,
-        
         19: 19, 20: 19, 21: 19, 22: 19,
-        
-        25: 25, 26: 25, 27: 25, 28: 25
+        25: 25, 26: 25, 27: 25
       };
 
       const exhibitionData = {
@@ -162,7 +165,7 @@ const targetGroupMapping = {
           `
         },
         2: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="i2">I</span><span class="e3">R</span><span class="r4">A</span><span class="r5">R</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">M</span><span class="t2">I</span><span class="t3">R</span><span class="t4">A</span><span class="t5">R</span></h1>`,
           textHTML: `
             <p><strong>Mirar la Tierra</strong><br> Kinkajú or martucha: this mammal species inhabits the territories of Cabañas and Cinquera. It is just one of many terrestrial animals with which the human species shares the same territory.</p>
             <p><strong>Cosecha de Oxígeno</strong><br> El Imposible National Park: oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water. Nature coexists in a perfect circle of giving and receiving, a circle that humanity is determined to break.</p>
@@ -170,7 +173,7 @@ const targetGroupMapping = {
           `
         },
         5: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>`,
           textHTML: `
             <p><strong>LONG AGO</strong>, before this territory was a country called El Salvador, it was inhabited by other populations. The native peoples name the place where they live as "Our Mother Earth", in Nahuat <i>Tunan Tal</i>. <i>Tunan Tal</i> is the place where life is created, the place that feeds and provides water to drink. It is the place that guards the goods that allow the continuity of existence throughout the length, breadth, and roundness of the Earth.</p>
             <p><strong>The native peoples embrace and nurture Nature, knowing they depend absolutely on it. On the other hand, the collective unconsciousness of consumerism is depleting our resources.</strong></p>
@@ -188,7 +191,7 @@ const targetGroupMapping = {
           `
         },
         6: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="i2">I</span><span class="e3">E</span><span class="r4">L</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">P</span><span class="t2">I</span><span class="t3">E</span><span class="t4">L</span></h1>`,
           textHTML: `
             <p><strong>Piel que cubre la Tierra</strong><br><strong>VEGETATION</strong> is to the planet what skin is to our bodies. This green layer is what maintains the appropriate temperature, regenerates the air, protects water, and nourishes.</p>
             <p>Foliage feeds on light. Foliage is food and shelter for other living beings. Roots protect and filter water. They support and nourish the soils.</p>
@@ -202,7 +205,7 @@ const targetGroupMapping = {
           `
         },
         7: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="i2">I</span><span class="e3">E</span><span class="r4">R</span><span class="r5">R</span><span class="a6">A</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>`,
           textHTML: `
             <p><strong>Entre el cielo y el suelo</strong><br>Raíces: embraced by the earth or cutting through tunnels, roots support the network of soils and transport nourishment. The sap that reaches the highest leaf, flower, or fruit of trees and plants.</p>
             <p><strong>La vide en el centro</strong><br>Iguanas in Cinquera: life thought of solely as a commodity is part of the environmental imbalance. Placing it at the center means pampering it, respecting its times, its needs, and transforming the relationship with nature.</p>
@@ -210,7 +213,7 @@ const targetGroupMapping = {
           `
         },
         10: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="i2">A</span><span class="e3">Ñ</span><span class="r4">A</span><span class="r5">L</span><span class="a6">E</span><span class="t1">S</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="t2">A</span><span class="t3">Ñ</span><span class="t4">A</span><span class="t5">L</span><span class="t6">E</span><span class="t1">S</span></h1>`,
           textHTML: `
             <p><strong>No tan dulces los cañales</strong><br><strong>THE EARTH is like skin.</strong> If a body is moistened every day with insecticide, it is quite likely that it will end up getting sick. The same happens with the earth. It absorbs all the toxins used to irrigate it. The poison accumulates until one day, it becomes infertile and dies.</p>
             <p><strong>Amargos Efectos</strong><br><strong>EXTENSIVE SUGARCANE CROPS</strong> are an example of this poisoning. Ripening agents and other chemicals travel to other places, contaminating what is in their path. The poison spreads and renders the lands it touches useless. Family subsistence crops are not free from danger.</p>
@@ -224,7 +227,7 @@ const targetGroupMapping = {
           `
         },
         11: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="i2">U</span><span class="e3">E</span><span class="r4">L</span><span class="r5">O</span><span class="a6">S</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="t2">U</span><span class="t3">E</span><span class="t4">L</span><span class="t5">O</span><span class="t6">S</span></h1>`,
           textHTML: `
             <p><strong>Suelos para comer</strong><br><strong>LOOKING at the countryside</strong>, one glimpses how agroindustry is destroying the territory.</p>
             <p><strong>WHAT THE MILPA LEFT BEHIND:</strong> this ancestral practice connects planting with the territory. It is also a way of relating to people. The impact of the Colony drastically modified this custom and opened an unbridgeable gap between subsistence and commercial production. People speak of corn and bean "monocultures".</p>
@@ -239,7 +242,7 @@ const targetGroupMapping = {
           `
         },
         12: { 
-          titleHTML: `<h1 class="wall-title"><span class="t1">L</span><span class="i2">I</span><span class="e3">V</span><span class="r4">E</span><span class="r5">S</span><span class="a6">T</span><span class="t1">O</span><span class="i2">C</span><span class="e3">K</span></h1>`,
+          titleHTML: `<h1 class="wall-title"><span class="t1">L</span><span class="t2">I</span><span class="t3">V</span><span class="t4">E</span><span class="t5">S</span><span class="t6">T</span><span class="t1">O</span><span class="t2">C</span><span class="t3">K</span></h1>`,
           textHTML: `
             <p>In the <strong>ATMOSPHERE</strong> different natural gases coexist, which in adequate proportions are necessary to maintain a good temperature on the Planet.</p>
             <p>Certain human activities emit and make the concentration of these gases increase. This excess unbalances the natural greenhouse effect and is what produces global warming.</p>
@@ -263,28 +266,6 @@ const targetGroupMapping = {
           `
         },
         13: { 
-          titleHTML: `<h1 class="wall-title"><span class="f1">B</span><span class="f2">A</span><span class="f3">J</span><span class="f4">O</span> <span class="f1">E</span><span class="f2">L</span> <span class="f3">V</span><span class="f4">O</span><span class="f1">L</span><span class="f2">C</span><span class="f3">Á</span><span class="f4">N</span></h1>`,
-          textHTML: `
-            <p><strong>Volcán de Izalco:</strong> considered the youngest of the territory, it is located south of Santa Ana. In another time, sailors anchoring in Acajutla called it the Lighthouse of the Pacific due to its permanent activity and the visibility of its lava from afar.</p>
-            <p><strong>Lava:</strong> fluids are part of the dynamics of the elements that make up the globe. The molten liquid, composed of heavy metals, moves within the solid core of the Earth's mass. In the heart of the Earth, heat is so intense that rocks and gases fuse to be shot through volcanoes.</p>
-            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
-            <div class="details-content">
-              <strong>El suelo protector (Fungi):</strong> its rapid and ramified growth beneath the earth makes fungi good transporters of mineral nutrients to plant roots. They increase the soil's capacity to retain water in the dry season and prove very useful with harvest waste.
-            </div>
-          `
-        },
-        14: { 
-          titleHTML: `<h1 class="wall-title"><span class="f1">B</span><span class="f2">A</span><span class="f3">J</span><span class="f4">O</span> <span class="f1">E</span><span class="f2">L</span> <span class="f3">V</span><span class="f4">O</span><span class="f1">L</span><span class="f2">C</span><span class="f3">Á</span><span class="f4">N</span></h1>`,
-          textHTML: `
-            <p><strong>Volcán de Izalco:</strong> considered the youngest of the territory, it is located south of Santa Ana. In another time, sailors anchoring in Acajutla called it the Lighthouse of the Pacific due to its permanent activity and the visibility of its lava from afar.</p>
-            <p><strong>Lava:</strong> fluids are part of the dynamics of the elements that make up the globe. The molten liquid, composed of heavy metals, moves within the solid core of the Earth's mass. In the heart of the Earth, heat is so intense that rocks and gases fuse to be shot through volcanoes.</p>
-            <button class="details-toggle" onclick="toggleDetails()">Read data</button>
-            <div class="details-content">
-              <strong>El suelo protector (Fungi):</strong> its rapid and ramified growth beneath the earth makes fungi good transporters of mineral nutrients to plant roots. They increase the soil's capacity to retain water in the dry season and prove very useful with harvest waste.
-            </div>
-          `
-        },
-        15: { 
           titleHTML: `<h1 class="wall-title"><span class="f1">B</span><span class="f2">A</span><span class="f3">J</span><span class="f4">O</span> <span class="f1">E</span><span class="f2">L</span> <span class="f3">V</span><span class="f4">O</span><span class="f1">L</span><span class="f2">C</span><span class="f3">Á</span><span class="f4">N</span></h1>`,
           textHTML: `
             <p><strong>Volcán de Izalco:</strong> considered the youngest of the territory, it is located south of Santa Ana. In another time, sailors anchoring in Acajutla called it the Lighthouse of the Pacific due to its permanent activity and the visibility of its lava from afar.</p>
@@ -372,21 +353,21 @@ const targetGroupMapping = {
               `
             },
             24: { 
-                  titleHTML: `<h1 class="wall-title" style="color: #234728; font-size: 24px;">Erosionar y Sin selva</h1>`,
-                  textHTML: `
-                    <p><strong>Winds, rain, and natural fires</strong> are causes of soil erosion or wear. The use of agrochemicals and the biological imbalance of ecosystems make the fertile layer of the earth disappear, soils lose nutrients, and crops do not grow as they should.</p>
-                    <p><strong>Sin selva, ni vientos no hay lluvias:</strong> Tropical jungles, with the help of the wind, take care of producing and distributing rains across the continent. Millions of liters of water are stored within, accumulating in vegetation. All this water evaporates and transforms into rain.</p>
-                    <p>If the jungle is left without trees, the circulation of air changes, winds get out of control or disappear, and with them, the rains they bring also disappear.</p>
-                    <p><strong>Erosionar (Wear):</strong> Decrease and deterioration of the earth's surface caused by water, ice, winds, thermal changes, and other bodies. Human activity accelerates soil erosion, leaving no time for them to form again.</p>
-                    <p><strong>El suelo</strong> needs time to form through a slow process. Without natural barriers, such as forests or vegetation, it is destroyed in a matter of hours and remains unrecoverable for many years.</p>
-                    <button class="details-toggle" onclick="toggleDetails()">Read data</button>
-                    <div class="details-content">
-                      <strong>The number of vehicles</strong> circulating in the country continues to increase every day. Traffic is unsustainable, the population grows, and pollution is the cause of many respiratory diseases.<br><br>
-                      If noise pollution is added to this, the outlook is desolate. The city gets sick, it becomes aggressive towards nature and the health of those who inhabit it.<br><br>
-                      <strong>Contaminación acústica (Noise Pollution):</strong> MUCHO ruido en todo los espacios. Houses, streets, churches, bars, shops, and the general population experience excessive noise levels that a person should bear. So much accumulated noise exceeds the levels that affect physical and mental health every day in this country.<br><br>
-                      Some investigations warn about psychological damage and anxiety suffered by those living in noisy environments, in addition to early hearing loss. Noisy educational centers make learning, concentration, and memory difficult.
-                    </div>
-                  `
+                titleHTML: `<h1 class="wall-title" style="color: #234728; font-size: 24px;">Erosionar y Sin selva</h1>`,
+                textHTML: `
+                  <p><strong>Winds, rain, and natural fires</strong> are causes of soil erosion or wear. The use of agrochemicals and the biological imbalance of ecosystems make the fertile layer of the earth disappear, soils lose nutrients, and crops do not grow as they should.</p>
+                  <p><strong>Sin selva, ni vientos no hay lluvias:</strong> Tropical jungles, with the help of the wind, take care of producing and distributing rains across the continent. Millions of liters of water are stored within, accumulating in vegetation. All this water evaporates and transforms into rain.</p>
+                  <p>If the jungle is left without trees, the circulation of air changes, winds get out of control or disappear, and with them, the rains they bring also disappear.</p>
+                  <p><strong>Erosionar (Wear):</strong> Decrease and deterioration of the earth's surface caused by water, ice, winds, thermal changes, and other bodies. Human activity accelerates soil erosion, leaving no time for them to form again.</p>
+                  <p><strong>El suelo</strong> needs time to form through a slow process. Without natural barriers, such as forests or vegetation, it is destroyed in a matter of hours and remains unrecoverable for many years.</p>
+                  <button class="details-toggle" onclick="toggleDetails()">Read data</button>
+                  <div class="details-content">
+                    <strong>The number of vehicles</strong> circulating in the country continues to increase every day. Traffic is unsustainable, the population grows, and pollution is the cause of many respiratory diseases.<br><br>
+                    If noise pollution is added to this, the outlook is desolate. The city gets sick, it becomes aggressive towards nature and the health of those who inhabit it.<br><br>
+                    <strong>Contaminación acústica (Noise Pollution):</strong> MUCHO ruido en todo los espacios. Houses, streets, churches, bars, shops, and the general population experience excessive noise levels that a person should bear. So much accumulated noise exceeds the levels that affect physical and mental health every day in this country.<br><br>
+                    Some investigations warn about psychological damage and anxiety suffered by those living in noisy environments, in addition to early hearing loss. Noisy educational centers make learning, concentration, and memory difficult.
+                  </div>
+                `
             },
             25: { 
                 titleHTML: `<h1 class="wall-title"><span class="w1">P</span><span class="w2">L</span><span class="w3">A</span><span class="w4">N</span><span class="w1">E</span><span class="w2">T</span><span class="w3">A</span> <span class="w1">A</span><span class="w2">Z</span><span class="w3">U</span><span class="w4">L</span></h1>`,
@@ -395,29 +376,6 @@ const targetGroupMapping = {
                   <p><strong>Profound Clarity:</strong> oceans occupy the largest surface of the planet and harbor 250,000 known species. Marine life sustains coastal communities around the world. Pollution strips them of food, health, and clean water.</p>
                   <p><strong>Mirror of Water (Laguna de Olomega):</strong> this protected natural area is the largest freshwater space in the eastern region. It is the reflection of vegetation that protects water and land, along with every species that inhabits and feeds on it.</p>
                 `
-            },
-            28: { 
-              titleHTML: `<h1 class="wall-title" style="color: #1e6b7b; font-size: 24px;">El agua y el cemento</h1>`,
-              textHTML: `
-                <p><strong>MOST</strong> of the surface of this great blue bowl is covered with water. This substance, devoid of odor, flavor, and color, is the indispensable element to ensure the life of the planet.</p>
-                <p><strong>SALTY WATERS</strong> fill almost the entire globe, highlighting the importance of oceans and seas in the structure of Earth. From these waters comes half of the oxygen we breathe, while marine plants are responsible for absorbing carbon dioxide.</p>
-                <p><strong>MAMMALS</strong>, fish, and tiny organisms form a chain in which each link depends on the other. If any of these links breaks, the system collapses and affects the entire environment. Humanity depends on these ecosystems.</p>
-                <p>The extraction of corals and massive fishing are some causes of this deterioration. It affects the quality of water, air, and limits the obtaining of food for fishing communities.</p>
-                <button class="details-toggle" onclick="toggleDetails()">Read data</button>
-                <div class="details-content">
-                  <strong>The water cycle:</strong> Water moves from top to bottom through its own cycle, ensuring that Earth maintains climatic and biological stability.<br><br>
-                  <strong>Distribution of water:</strong> 71% Water (3% Freshwater suitable for human consumption, 97% Saltwater, seas and oceans), 29% Continental mass.<br><br>
-                  <strong>Cement that sucks and dries:</strong> Cement on soils acts as a plastic layer that does not allow water infiltration. Below the concrete slabs, vegetation dies, the earth does not transpire, and this affects the natural cycle of rains.<br><br>
-                  After water, cement is the most used substance on earth. It emits from 4% to 8% of global carbon dioxide and much water is needed for its production.<br><br>
-                  Fertile lands remain buried underneath, the irregularities of the soil that accumulate water and dry rivers disappear, and the creatures that inhabit the territory vanish. Isolated more and more from nature, behind walls, cities are built above underground water reserves.<br><br>
-                  The natural landscape is part of the balance. Perhaps other ways of building are necessary, leaving space to the earth, mud, grass, animals, trees, and zones for rainwater management.<br><br>
-                  <strong>Carbon dioxide (CO2):</strong> Colorless and dense gas forming part of the closest atmospheric layer to earth. When accumulated in excess, it has a great impact on the accelerated warming of the planet. Its concentration has increased in the last 160 years due to human activity.<br><br>
-                  <strong>BAD habits at home</strong> that cause water waste:<br>
-                  - Toilet leaks: 100 and 1,000 liters per day.<br>
-                  - Faucet leaks: 800 liters per day.<br>
-                  - Shower spends 26 liters per minute.
-                </div>
-              `
             }
       };
 
@@ -449,7 +407,7 @@ const targetGroupMapping = {
         }
       }
 
-      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 23, 24, 25, 28];
+      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
       
       activeTargets.forEach(i => {
         let targetEl = document.getElementById('target-' + i);
