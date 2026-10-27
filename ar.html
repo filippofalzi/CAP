@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Museo Suchitoto | AR Tour</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      :root {
+        --cap-teal: #1a7179;
+        --cap-orange: #eba03b;
+        --ui-bg: rgba(26, 26, 24, 0.95);
+      }
+
+      body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
+      
+      /* --- NAVIGAZIONE SUPERIORE --- */
+      #top-nav {
+        position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+        width: 95%; max-width: 500px; display: flex; justify-content: space-between;
+        gap: 8px; z-index: 9999;
+      }
+
+      #panel-selector {
+        flex: 1; padding: 12px 8px; border-radius: 8px; border: 2px solid var(--cap-teal);
+        background: var(--ui-bg); color: white; font-weight: bold; font-size: 13px;
+        appearance: none; outline: none; cursor: pointer; text-align: center;
+      }
+
+      #btn-sala2 {
+        background: var(--cap-orange); color: white; border: none; padding: 0 14px;
+        border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer;
+        text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        white-space: nowrap;
+      }
+
+      /* --- HINT E CARD AR (Stile identico a ar_old.html, ma abbassato a top: 70px per non sbattere contro il menu) --- */
+      #ui-hint {
+        display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.6); color: rgba(255, 255, 255, 0.9); padding: 8px 16px;
+        border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+        letter-spacing: 0.5px; z-index: 9998; pointer-events: none;
+        text-align: center;
+      }
+
+      #museum-card {
+        display: none; position: fixed; bottom: 5vh; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 420px; background: var(--ui-bg); color: #f5f5f5;
+        border-radius: 12px; border-top: 5px solid var(--cap-teal);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8); z-index: 99999;
+        max-height: 60vh; overflow-y: auto; pointer-events: auto;
+        padding: 24px; box-sizing: border-box;
+        text-align: center;
+      }
+
+      #museum-card::-webkit-scrollbar { width: 0px; }
+
+      .badge {
+        background: var(--cap-teal); color: white; padding: 4px 8px; border-radius: 4px;
+        font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block;
+      }
+
+      #dynamic-title { margin: 0 0 12px 0; }
+
+      .wall-title { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; color: white;}
+      
+      /* Colori per le sezioni (Terra, Fuoco, Aria, Acqua) */
+      .t1 { color: #442a22; } .t2 { color: #5a382c; } .t3 { color: #9c4533; } .t4 { color: #872a23; } .t5 { color: #5f2821; } .t6 { color: #40241b; }
+      .f1 { color: #822b27; } .f2 { color: #9c4533; } .f3 { color: #b85d29; } .f4 { color: #eba03b; }
+      .a1 { color: #5a733e; } .a2 { color: #3b5c32; } .a3 { color: #234728; } .a4 { color: #183820; } 
+      .w1 { color: #1e6b7b; } .w2 { color: #288494; } .w3 { color: #1a5c68; } .w4 { color: #12404b; }
+
+      #dynamic-text p { font-size: 17px; line-height: 1.6; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
+      #dynamic-text p strong { color: #ffffff; }
+
+      /* --- BOTTONE DINAMICO IMMAGINI (In alto sopra il testo principale) --- */
+      #details-toggle {
+        display: none; background: rgba(235, 160, 59, 0.15); border: 1.5px solid var(--cap-orange); color: var(--cap-orange);
+        padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
+        text-transform: uppercase; cursor: pointer; margin: 0 0 15px 0; width: 100%;
+        transition: all 0.2s; text-align: center;
+      }
+      #details-toggle.visible { display: block; }
+      #details-toggle:active { background: var(--cap-orange); color: white; }
+      
+      #details-content {
+        display: none; margin: 0 0 18px 0; padding: 14px; border-radius: 8px;
+        background: rgba(255,255,255,0.06); border-left: 3px solid var(--cap-orange);
+        font-size: 14px; line-height: 1.5; color: #e9e5dc; text-align: left;
+      }
+      #details-content.open { display: block; }
+      #details-content p { margin: 0 0 10px 0; }
+      #details-content p:last-child { margin: 0; }
+
+      /* --- MODALE SALA 2 (TIMELINE) --- */
+      #modal-sala2 {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #f2efe9; z-index: 999999; overflow-y: auto; padding: 20px; box-sizing: border-box;
+      }
+      #modal-sala2.open { display: block; }
+      
+      .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 15px; margin-bottom: 20px; }
+      .modal-title { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #442a22; margin: 0; text-transform: uppercase; }
+      
+      #btn-close-sala2 {
+        background: #442a22; color: white; border: none; padding: 8px 15px;
+        border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+      }
+      .timeline-placeholder { text-align: center; color: #666; margin-top: 50px; font-size: 18px; }
+
+    </style>
+  </head>
+  <body>
+    
+    <!-- Barra superiore: Menu a tendina + Bottone Room 2 Timeline -->
+    <div id="top-nav">
+      <select id="panel-selector">
+        <option value="">-- Select Panel --</option>
+        <option value="0">Intro 0: Tierra hay una sola</option>
+        <option value="1">Intro 1: Soplo de vida</option>
+        <option value="2">Tierra 1: Madre Tierra & Piel</option>
+        <option value="3">Tierra 2: No tan dulces los cañales</option>
+        <option value="4">Tierra 3: Suelos para comer</option>
+        <option value="5">Fuego 1: Quema y Combustibles</option>
+        <option value="6">Fuego 2: Calor que transforma</option>
+        <option value="7">Aire 1: Rutas del viento & Ciudad</option>
+        <option value="8">Aire 2: Un mal soplo al aire</option>
+        <option value="9">Aire 3: Las abejas y polinización</option>
+        <option value="10">Agua 1: Planeta Azul & Cuencas</option>
+        <option value="11">Agua 2: Lago Suchitlán & Suchitoto</option>
+        <option value="12">Agua 3: Huella hídrica</option>
+        <option value="13">Agua 4: Los peces fuera del agua</option>
+      </select>
+      <button id="btn-sala2">Room 2: Timeline</button>
+    </div>
+
+    <!-- Modale Sala 2 -->
+    <div id="modal-sala2">
+      <div class="modal-header">
+        <h2 class="modal-title">Room 2: Timeline (Sala 2)</h2>
+        <button id="btn-close-sala2">Close ✕</button>
+      </div>
+      <div class="timeline-placeholder">
+        [Struttura della Linea Temporale della Sala 2 in lavorazione...]
+      </div>
+    </div>
+
+    <!-- Hint Tap to Lock (Esattamente come in ar_old.html) -->
+    <div id="ui-hint">👆 Tap to lock</div>
+
+    <!-- Card Principale -->
+    <div id="museum-card">
+      <span class="badge" id="card-badge">English</span>
+      <div id="dynamic-title"></div>
+      
+      <!-- Bottone Didascalie Immagini posizionato IN ALTO sotto il titolo -->
+      <button id="details-toggle">🖼️ View Image Captions</button>
+      <div id="details-content"></div>
+
+      <!-- Testo Principale della Tavola -->
+      <div id="dynamic-text"></div>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: ./minds/targets.mind; filterMinCF: 0.001; filterBeta: 0.001;" 
+             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+      <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
+      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
+      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
+      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
+      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
+      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
+      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
+      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
+      <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
+      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
+      <a-entity id="target-12" mindar-image-target="targetIndex: 12"></a-entity>
+      <a-entity id="target-13" mindar-image-target="targetIndex: 13"></a-entity>
+    </a-scene>
+
+    <script>
+      let isFrozen = false;
+      const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
+      const titleContainer = document.getElementById('dynamic-title');
+      const textContainer = document.getElementById('dynamic-text');
+      const detailsToggleBtn = document.getElementById('details-toggle');
+      const detailsContent = document.getElementById('details-content');
+      const panelSelector = document.getElementById('panel-selector');
+      
+      const modalSala2 = document.getElementById('modal-sala2');
+      const btnSala2 = document.getElementById('btn-sala2');
+      const btnCloseSala2 = document.getElementById('btn-close-sala2');
+
+      // TUTTI I TESTI INTEGRALI ESTRATTI DAL PDF "Texto Final.pdf"
+      const exhibitionData = {
+        0: { 
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">Tierra hay una sola</h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p>A MEDIADOS del siglo pasado, se extendió un modelo de producción que prometía más comodidad, bienestar y acceso al alimento para todas las personas. Sin embargo, este modelo venía acompañado de un uso desmedido de agroquímicos, tala indiscriminada, saqueo de agua y contaminación.</p>
+            <p>La promesa de terminar con el hambre nunca se hizo realidad. En El Salvador, se pierden 12.000 millones m2 de agua de lluvia a causa de la deforestación y se talan 4.500 hectáreas al año. <strong>Es hora de poner la vida en el centro.</strong></p>
+          `
+        },
+        1: { 
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 22px;">Con un soplo se apagan millones de años de vida</h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p>Toda la complejidad que encierra la Tierra es el resultado espectacular de una cadena de transformaciones en las que el fuego, agua, viento y partículas de roca, se confabularon hasta llegar aquí.</p>
+            <p>• Los volcanes escupieron la lava, que al enfriarse, formó la superficie terrestre.<br>
+            • Más meteoritos llenaron de vida el agua, haciendo florecer criaturas acuáticas.<br>
+            • Algunas, gatearon hasta al suelo para convertirlo en su hogar; y así evolucionaron, cada una del resto de especies.<br>
+            • El viento se encargó de repartir las semillas que propagaron la vegetación.</p>
+            <p>La Tierra está terminada hace 20 millones de años. Necesitó un tiempo incalculable para encontrar el equilibrio, y en menos de un siglo, la humanidad quizá sea la responsable de su extinción.</p>
+            <p>La responsabilidad de cambiar el rumbo es compartida, a fin de cuentas, la Tierra sobrevivirá 4,500 millones de años mas y sabrá como regenerarse sin la humanidad.</p>
+          `
+        },
+        2: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>`,
+          detailsHTML: `
+            <p><strong>Mirar la Tierra:</strong> Kinkajú o martucha: esta especie de mamífero habita los territorios de Cabañas y Cinquera.</p>
+            <p><strong>Cosecha de Oxígeno:</strong> Parque Nacional El Imposible: el oxígeno y la buena tierra dependen de la vegetación, la vegetación depende del agua para nutrirse, y del agua dependen las criaturas que la habitan.</p>
+            <p><strong>Compañía en Casa:</strong> Patos domésticos: forman parte de la vida rural del territorio. Comparten casa con cerdos, gallinas, cabras, otros animales de corral y, por supuesto, personas.</p>
+          `,
+          textHTML: `
+            <p><strong>Madre Tierra</strong><br>HACE MUCHO TIEMPO, antes de ser El Salvador, este territorio estuvo habitado por los pueblos originarios. Ellos nombran el lugar como "Nuestra Madre Tierra" (Tunan Tal), donde se crea la vida y se provee agua. Datos territoriales: 6.581.860 habitantes en 21.041 km² ("El Pulgarcito de América"). El 60,20% vive en zonas urbanas y el 39,80% en rurales.</p>
+            <p><strong>Piel que cubre la Tierra</strong><br>LA VEGETACIÓN es para el planeta lo que la piel para nuestros cuerpos: mantiene la temperatura apropiada, regenera el aire, protege el agua y alimenta. EL VERDOR come carbono del aire, lo transforma en alimento, hojas y troncos; a cambio, produce oxígeno y refresca el ambiente. PARECE QUE AHORA, la Tierra se ve solo como un "baúl lleno de recursos" de donde sacar sin límite, pero lo que sale de este baúl se agota, y sin él no es posible la vida.</p>
+            <p><strong>Estadísticas de deforestación:</strong> El Salvador no tiene mucha naturaleza de la que enorgullecerse. Es el segundo país más deforestado de América Latina.<br>
+            1. El 22% de los bosques son talados anualmente.<br>
+            2. Solo el 37,9% se considera área boscosa (equivalente a 7.995 km²).<br>
+            3. Solo el 1% del territorio es área protegida, frente al 10% que todo país debería tener según el Convenio sobre la Diversidad Biológica.</p>
+          `
+        },
+        3: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">C</span><span class="t2">A</span><span class="t3">Ñ</span><span class="t4">A</span><span class="t5">L</span><span class="t6">E</span><span class="t1">S</span></h1>`,
+          detailsHTML: `
+            <p><strong>Entre el cielo y el suelo (Raíces):</strong> abrazadas por la tierra o surcando túneles, las raíces sostienen el entramado de suelos y transportan alimento.</p>
+            <p><strong>La vida en el centro (Iguanas en Cinquera):</strong> ponerla en el centro supone mimarla, respetar sus tiempos, sus necesidades y transformar la relación con la naturaleza.</p>
+            <p><strong>Árboles comestibles (Ramas suculentas):</strong> plantar frutales variados es asegurar sus beneficios a lo largo del año, y por muchos años. Dan sombra, madera y son un complemento alimenticio de vitaminas y minerales.</p>
+          `,
+          textHTML: `
+            <p><strong>No tan dulces los cañales</strong><br>LA TIERRA es como la piel. Si un cuerpo se humedece cada día con insecticida, es bastante probable que termine enfermando. Va absorbiendo todos los tóxicos que la riegan. El veneno se acumula hasta que un día se vuelve infértil y muere.</p>
+            <p><strong>Plantaciones de caña con lógica industrial:</strong> arrasa tierras, arrastra enfermedades respiratorias por quemas y uso de agroquímicos. Con tanto veneno, no es de extrañar la epidemia de insuficiencia renal que golpea estos municipios. Los cultivos extensivos usan grandes cantidades de agua subterránea, que dejan en sequía a las comunidades.</p>
+            <p>LOS DERIVADOS del jugo de caña que ofrece un trapiche tradicional son naturales y libres de agroquímicos. La producción es artesanal, a pequeña escala y no requiere quema para cosechar; además, promueve el consumo local.</p>
+          `
+        },
+        4: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="t2">U</span><span class="t3">E</span><span class="t4">L</span><span class="t5">O</span><span class="t6">S</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Suelos para comer</strong><br>AL MIRAR EL CAMPO se vislumbra cómo la agroindustria está acabando con el territorio. Lo deteriora y no llega a solventar las necesidades alimentarias de la mayoría.</p>
+            <p><strong>La Milpa:</strong> Frijol, maíz, chile, ayote. Se siembran plantas, granos y frutos que se van nutriendo entre ellas. Esta práctica ancestral asegura la cosecha, una alimentación variada y el buen uso de la tierra.</p>
+            <p><strong>Iniciativas locales y naturaleza:</strong> Cultivo de caña y trapiche tradicional en San Antonio, Municipio de Suchitoto. Con esta iniciativa se mantiene una tradición que promueve la soberanía de cultivos y ofrece productos sanos a la comunidad.</p>
+          `
+        },
+        5: { 
+          titleHTML: `<h1 class="wall-title"><span class="f1">F</span><span class="f2">U</span><span class="f3">E</span><span class="f4">G</span><span class="f1">O</span></h1>`,
+          detailsHTML: `
+            <p><strong>Volcán de Izalco:</strong> considerado el más joven del territorio, se ubica al sur de Santa Ana. Los marineros que anclaban en Acajutla le llamaban el Faro del Pacífico.</p>
+            <p><strong>El suelo protector (Hongos):</strong> su rápido crecimiento y ramificado por debajo de la tierra hace de los hongos buenos transportadores de nutrientes minerales a las raíces de las plantas.</p>
+            <p><strong>Lava:</strong> el líquido fundido, compuesto de metales pesados, se mueve dentro del núcleo sólido de la masa terrestre. En el corazón de la Tierra, el calor es tan intenso que rocas y gases se fusionan.</p>
+          `,
+          textHTML: `
+            <p><strong>Quema y arrasa</strong><br>En los meses de abril, la quema de maleza en temporada de maíz o para la roza de la caña son prácticas muy extendidas. EL FUEGO quema la maleza, pero también mata a millones de pequeños organismos que nutren la tierra. El fuego provoca que los suelos pierdan humedad, los nutrientes se desintegran y se vuelve infértil. Sin fertilidad, se inundan de químicos que terminan dañándolos por completo: se acelera la muerte de la tierra y escasea el alimento.</p>
+            <p><strong>Los organismos que trabajan la fertilidad:</strong><br>
+            • <strong>Hongos:</strong> descomponen materia y frenan organismos perjudiciales.<br>
+            • <strong>Bacterias:</strong> deshacen materia orgánica y liberan minerales para las plantas.<br>
+            • <strong>Lombrices:</strong> excavan túneles por donde entra oxígeno y se transportan nutrientes.<br>
+            Una alternativa como protección al fuego es sustituir los grandes campos de monocultivo por cultivos en mosaico con plantas variadas.</p>
+            <p><strong>Combustibles y minería</strong><br>Los combustibles fósiles (carbón, petróleo y gas natural) provienen de la descomposición milenaria de materia orgánica. Al ser recursos que se agotan y difíciles de renovar, su uso genera un grave problema de sostenibilidad.<br>
+            • <strong>Impacto minero:</strong> Implica daños irreversibles traducidos en sobrecalentamiento global e impacto socioeconómico.<br>
+            • <strong>Energía y suelos:</strong> La energía geotérmica aprovecha el calor de las rocas. Por su parte, los suelos volcánicos son ricos para el cultivo porque los fragmentos de una erupción se erosionan y liberan nutrientes.</p>
+          `
+        },
+        6: { 
+          titleHTML: `<h1 class="wall-title"><span class="f1">C</span><span class="f2">A</span><span class="f3">L</span><span class="f4">O</span><span class="f1">R</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Calor que transforma y alimenta</strong><br>ELEMENTO transformador y sagrado en casi todas las culturas. De este elemento primigenio surge la creación del planeta y la posibilidad de hacer del alimento algo más que mera supervivencia.</p>
+            <p>• <strong>Fuego en comunidad:</strong> Cocinar los alimentos permitió optimizar sus nutrientes, hacer el acto de comer más sociable, permitir la migración y forjar identidades a partir de la comida.<br>
+            • <strong>Salto evolutivo:</strong> El control del fuego por el Homo Erectus hace 800.000 años supuso sobrevivir al frío y fortalecer las interacciones sociales y el lenguaje.<br>
+            • <strong>La cocina primitiva:</strong> Se pasó de asar carne y pescado a usar vasijas de barro para cocer y preparar sopas, lo que incrementó las calorías, ablandó los alimentos y mejoró la esperanza de vida.<br>
+            • <strong>Alternativas amigables:</strong> Frente al consumo incontrolable de plástico, existen opciones más amables con el entorno como utensilios de barro, guacales de morro, hojas de huerta o canastas de fibras naturales.</p>
+          `
+        },
+        7: { 
+          titleHTML: `<h1 class="wall-title"><span class="a1">A</span><span class="a2">I</span><span class="a3">R</span><span class="a4">E</span></h1>`,
+          detailsHTML: `
+            <p><strong>Equilibrio en el vuelo (Cielo ocupado):</strong> aves, aviones y helicópteros usan las mismas autopistas aéreas; pero el aumento de pájaros de hierro afecta, cada vez más, el vuelo de las aves.</p>
+            <p><strong>El olor del viento (Depuración):</strong> hacen falta fortalezas verdes, bosques por lo que respire la tierra y limpien los malos olores que la industria provoca.</p>
+            <p><strong>La fragilidad del entorno (Algodón):</strong> esta mullida fibra, ya era utilizada por los pueblos originarios. Es uno de los cultivos más contaminantes. Requiere grandes cantidades de herbicidas y agua. Existe la posibilidad de obtenerla con técnicas de cultivo orgánico.</p>
+            <p><strong>Algunos pican flores (Zancudos):</strong> estos molestos bichitos también son atraídos por flores y chupan su néctar. No existen demasiadas evidencias sobre la importancia que tienen en las cadenas alimentarias. La subida de las temperaturas globales facilita su reproducción.</p>
+          `,
+          textHTML: `
+            <p><strong>Las rutas del viento</strong><br>TODOS los elementos de la naturaleza influyen en la agricultura y tienen impacto en la alimentación. Los vientos son caminos por donde se desplazan las aves, determinando su migración y la dispersión de semillas.</p>
+            <p>• <strong>Viento suave:</strong> Mece las plantas dándoles fortaleza en sus troncos, guía el agua hacia la atmósfera y transporta polen y semillas.<br>
+            • <strong>Viento fuerte:</strong> Quiebra ramas, impide la polinización de las abejas y, si pasa por zonas con plaguicidas, esparce tóxicos por los lugares cercanos.<br>
+            Sin barreras naturales como los bosques, la erosión destruye el suelo en cuestión de horas y se vuelve irrecuperable. Además, las selvas tropicales, con ayuda del viento, fabrican y reparten las lluvias por el continente: si se quedan sin árboles, desaparecen las lluvias.</p>
+            <p><strong>Ciudad y contaminación acústica</strong><br>El tráfico urbano sigue aumentando y la contaminación causa muchas enfermedades respiratorias. Si a esto se suma la contaminación acústica, el panorama es desolador: la ciudad se enferma y se vuelve agresiva con la naturaleza y la salud de quienes la habitan.<br>
+            • <strong>Contaminación acústica:</strong> El ruido acumulado en casas, calles y comercios supera los niveles que una persona debería aguantar, afectando la salud física y mental, provocando ansiedad y pérdida de audición a temprana edad.</p>
+          `
+        },
+        8: { 
+          titleHTML: `<h1 class="wall-title" style="font-size: 24px;"><span class="a1">V</span><span class="a2">e</span><span class="a3">r</span><span class="a4">d</span><span class="a1">e</span><span class="a2">s</span> <span class="a3">P</span><span class="a4">u</span><span class="a1">l</span><span class="a2">m</span><span class="a3">o</span><span class="a4">n</span><span class="a1">e</span><span class="a2">s</span></h1>`,
+          detailsHTML: `
+            <p><strong>Selva tropical:</strong> Con cada árbol cortado, la de animales y plantas que le habitan, también desaparecen. La agroindustria de ganado, palma y soja, las edificaciones sin limites, proyectos petroleros o mineros están acabando con los pulmones de la tierra.</p>
+          `,
+          textHTML: `
+            <p><strong>Un mal soplo al aire</strong><br>EL CLIMA tiene variaciones naturales, pero la comunidad científica alerta de cómo las actividades humanas alteran los elementos que componen el aire. La pérdida de selvas tropicales hace desaparecer las lluvias: la disminución prevista es de hasta un 90%.</p>
+            <p>TRANSPORTE, ganadería, industria y residuos producen gases nocivos que alteran la temperatura y propagan enfermedades como el chagas o el dengue. Además, el deshielo de los glaciares hace subir el nivel del mar y las aguas devoran el territorio costero.</p>
+            <p>En nuestra región, el cambio climático intensifica la "canícula", provocando sequías prolongadas o lluvias intensas que destruyen más de la mitad de las cosechas de maíz y frijol, afectando a la agricultura de subsistencia y provocando crisis alimentaria. De julio a octubre, las tormentas tropicales y huracanes desbordan los ríos Lempa y Grande de San Miguel.<br>
+            • <strong>88,7%</strong> del territorio se considera zona de riesgo.<br>
+            • <strong>95,4%</strong> de la población se encuentra en este territorio de riesgo.</p>
+          `
+        },
+        9: { 
+          titleHTML: `<h1 class="wall-title" style="font-size: 24px;"><span class="a1">P</span><span class="a2">o</span><span class="a3">l</span><span class="a4">i</span><span class="a1">n</span><span class="a2">i</span><span class="a3">z</span><span class="a4">a</span><span class="a1">c</span><span class="a2">i</span><span class="a3">ó</span><span class="a4">n</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Las abejas y la polinización</strong><br>LA MIEL en el pan, la tortilla con frijoles, el jugo de naranja o el café de la mañana: es probable que en este desayuno hayan intervenido algunas abejas. Más del 75 por ciento de los cultivos del mundo dependen de los animales que transfieren su polen. Las abejas han sido declaradas patrimonio por la ONU al ser clave en los ciclos que mantienen con vida el planeta.</p>
+            <p>Sin embargo, las abejas están en peligro por la pérdida de su hogar, enfermedades, parásitos y el uso de pesticidas que las matan. Cuando los espacios de vida diversa se convierten en grandes extensiones de monocultivos, la fuente de sustento se descompone.</p>
+            <p><strong>La polinización:</strong> los insectos chupan el néctar de las flores, recogen polen con sus patas, alas y antenas. Mientras se lleva a cabo el deseado banquete, el polen viaja desde el órgano reproductor de una flor hasta la flor en la que germinará, haciendo que las plantas se multipliquen por la tierra.</p>
+          `
+        },
+        10: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">P</span><span class="w2">L</span><span class="w3">A</span><span class="w4">N</span><span class="w1">E</span><span class="w2">T</span><span class="w3">A</span> <span class="w1">A</span><span class="w2">Z</span><span class="w3">U</span><span class="w4">L</span></h1>`,
+          detailsHTML: `
+            <p><strong>Planeta Azul:</strong> desde muy arriba, el Planeta Azul evidencia la vasta cantidad de agua que lo envuelve. Desde el espacio todo parece en calma y armonía.</p>
+            <p><strong>Profunda claridad (Océanos):</strong> ocupan la mayor superficie del planeta y albergan 250.000 de las especies. La vida marina permite la subsistencia de las comunidades costeras del mundo.</p>
+            <p><strong>Espejo de Agua (Laguna de Olomega):</strong> esta zona natural protegida es el espacio mas grande de agua dulce de Oriente. Es el reflejo de una vegetación que protege el agua y la tierra, junto a cada especie que la habita y se alimenta de ella.</p>
+          `,
+          textHTML: `
+            <p><strong>Planeta Azul y Cemento</strong><br>LA MAYOR parte de la superficie de esta gran canica azul está cubierta de agua: 71% agua, 29% masa continental. El 3% es agua dulce apta para consumo humano y el 97% mares y océanos. De las aguas saladas obtenemos la mitad del oxígeno que respiramos, mientras las plantas marinas absorben el dióxido de carbono. La extracción de corales y la pesca masiva deterioran esta cadena. El agua está mal repartida y su mal uso nos enfrenta a un futuro seco. La contaminación del territorio llega a las aguas subterráneas afectando su calidad.</p>
+            <p>• <strong>Cemento que chupa y seca:</strong> El cemento actúa como una capa plástica que impide la infiltración del agua. Debajo mueren la vegetación y las tierras fértiles, y se secan los ríos. Después del agua, el cemento es la sustancia más utilizada en la tierra: emite del 4% al 8% del dióxido de carbono mundial y requiere muchísima agua para su elaboración.<br>
+            • <strong>Malos hábitos en el hogar:</strong> Fugas en el inodoro (100 a 1000 litros por día), fugas en chorros (800 litros por día) y la regadera gasta 26 litros por minuto. En las ciudades se malgasta el agua mientras en las zonas rurales muchas personas caminan kilómetros por unos litros al día. Un grupo familiar usa 800 litros de agua al día.</p>
+            <p><strong>Cuencas, Acuíferos y Contaminación</strong><br>
+            • <strong>CUENCA:</strong> son las tierras que van guiando el agua de lluvia para distintos afluentes. Se forman a través de terrenos montañosos haciendo recorridos de zonas altas a bajas.<br>
+            • <strong>ACUÍFERO:</strong> Aguas que absorbe la tierra y se guardan en espacios sin salida.<br>
+            El abastecimiento principal de agua potable en el país se realiza por aguas subterráneas, que tienen mejor calidad. Sin embargo, esto no es posible si las fuentes se llenan de residuos de grandes empresas que extraen el agua de los pozos de las comunidades y luego vierten sus desechos en ríos. Son las personas que habitan estas comunidades quienes tienen el derecho sobre los pozos y su agua limpia.<br>
+            • <strong>Cuencas mal manejadas:</strong> Los suelos son poco esponjosos, lo que dificulta que el agua llene las cavidades bajo tierra. El agua superficial se seca y el caudal de los ríos es cada vez menor.<br>
+            • <strong>Granjas de cerdos:</strong> Producen aguas residuales y excrementos que enferman el entorno. A los animales se les suministran altas dosis de cobre, zinc, nitrógeno y fósforo que se acumulan en los suelos y desestabilizan los ecosistemas.</p>
+          `
+        },
+        11: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span> <span class="w1">S</span><span class="w2">U</span><span class="w3">C</span><span class="w4">H</span><span class="w1">I</span><span class="w2">T</span><span class="w3">O</span><span class="w4">T</span><span class="w1">O</span></h1>`,
+          detailsHTML: `
+            <p><strong>Las formas del agua (Cuenca del río Lempa):</strong> Es la más importante de la región, pero su alto grado de contaminación afecta a quienes habitan sus orillas.</p>
+            <p><strong>Habitantes del lago (Garza Blanca en Suchitlán):</strong> Las plácidas aguas del embalse acogen a miles de aves migratorias.</p>
+            <p><strong>Cobijo de fuentes (Manantiales):</strong> Por ríos y arroyos circula el agua en la tierra, como la sangre por las venas.</p>
+          `,
+          textHTML: `
+            <p><strong>Se ahoga la vida en el lago</strong><br>La presa hidroeléctrica de Cerrón Grande es conocida como "Lago Suchitlán". Nutrido por el río Lempa y construido en 1976, esta intervención causó el desplazamiento de miles de personas y rompió el equilibrio natural.<br>
+            • <strong>JACINTO DE AGUA (Eichhornia crassipes):</strong> Originario de Brasil, fue introducido para limpiar las aguas absorbiendo nutrientes y metales pesados. Al estar fuera de su origen natural, se convirtió en un desequilibrio y su crecimiento descontrolado afecta a todo el embalse.<br>
+            • <strong>LA TILAPIA:</strong> Funciona como un colador, tragando desperdicios y suciedad, lo que la hace poco apta para su consumo por los metales pesados.<br>
+            Suchitlán tiene un espejo de agua de 13.500 hectáreas y sus aguas son compartidas con más de 100 mil personas de Chalatenango, Cuscatlán y Cabañas. A este lago llegan alrededor de 3.800 toneladas de basura al año, aunque el experimento ha sido declarado "Humedal de Importancia Internacional".</p>
+            <p><strong>El agua que bebe Suchitoto</strong><br>
+            <strong>HUMEDALES:</strong> Zonas de transición habitadas por ecosistemas terrestres y acuáticos que brindan alimento, recargan aguas subterráneas y controlan crecidas. No se aplican medidas reales de protección ni de la sociedad ni del Estado.<br>
+            Del caudal de los ríos que se desprenden de dos cerros clave depende el mantenimiento de las zonas de recarga acuífera:<br>
+            • <strong>Cerro Tecomatepeque:</strong> Altitud de 950 m.<br>
+            • <strong>Cerro Guazapa:</strong> Suroeste de Suchitoto, elevación de 1438 m, con bosque tropical seco.<br>
+            De estos cerros se desprenden 28 ríos y quebradas que van a parar al Río Lempa. Entre los afluentes están: los Limones, Chalchigüe, Quezalapa, Sinacapa y Acelhuate. El más importante y contaminado que desagua en Suchitlán es el Acelhuate. Parar la tala de árboles son acciones básicas para conservar la tierra y el agua.</p>
+            <p><strong>Datos de los bosques en Suchi:</strong><br>
+            22% Forestando | 61% Parcialmente Deforestado | 17% Deforestado.<br>
+            61% se abastecen de un nacimiento o río; 39% de pozos.<br>
+            Los ríos Suquiapa y Sucio, junto a los demás, arrastran residuos de beneficios de café, ingenios azucareros, rastros municipales y redes de alcantarilla. Mantener las fuentes vivas garantiza el caudal, la calidad y la existencia de aguas subterráneas.</p>
+          `
+        },
+        12: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">H</span><span class="w2">U</span><span class="w3">E</span><span class="w4">L</span><span class="w1">L</span><span class="w2">A</span> <span class="w3">H</span><span class="w4">Í</span><span class="w1">D</span><span class="w2">R</span><span class="w3">I</span><span class="w4">C</span><span class="w1">A</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Agua necesaria para...</strong><br>PRODUCIR a gran escala a un bajo coste significa utilizar regadíos y maquinaria que gastan grandes cantidades de agua. En estas cadenas de producción, cada gota utilizada equivale casi al 70% de la huella hídrica mundial:<br>
+            <em>"Se riegan pastos o cereales, que luego serán procesados para alimentar a los animales. Estos animales se llevan al matadero, se destasan, se empacan hasta llegar al supermercado."</em></p>
+            <p><strong>¿HUELLA HÍDRICA?</strong> Indicador medioambiental que mide el agua dulce empleada en el proceso de producción de un objeto, alimento o servicio. Es un buen punto de partida para concienciar sobre un manejo eficaz del agua.</p>
+            <p>• <strong>1 K. pollo:</strong> 4.300 litros<br>
+            • <strong>1 K. azúcar:</strong> 750 litros<br>
+            • <strong>1 Taza. Café:</strong> 840 litros<br>
+            • <strong>1 L. Leche:</strong> 1.000 litros<br>
+            • <strong>1 K. carne:</strong> 6.000 litros / 15.000 litros<br>
+            • <strong>1 K. Frijoles:</strong> 1.800 litros<br>
+            • <strong>1 Pantalón:</strong> 10,850 litros<br>
+            • <strong>1 L. cerveza:</strong> 300 litros<br>
+            • <strong>1 gaseosa:</strong> 122 litros</p>
+          `
+        },
+        13: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Los peces fuera del agua</strong><br>EN EL CAUCE del río Lempa convivían variedades de especies que eran alimento para pescadores y equilibrio natural de la fauna marina.</p>
+            <p>Con la creación del embalse llegó la Tilapia. Este pez depredador no es propio de la zona ni vino con el cauce del río: fue traído de lejos y metido a la fuerza al lago, inundando las aguas, devorando las especies autóctonas y generando un desastre ecológico.</p>
+          `
+        }
+      };
+
+      detailsToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        detailsContent.classList.toggle('open');
+        detailsToggleBtn.innerText = detailsContent.classList.contains('open') ? '▲ Hide Image Captions' : '🖼️ View Image Captions';
+      });
+
+      function loadPanelData(index) {
+        const data = exhibitionData[index];
+        if (!data) return;
+
+        titleContainer.innerHTML = data.titleHTML;
+        textContainer.innerHTML = data.textHTML;
+        
+        if (data.detailsHTML && data.detailsHTML.trim() !== '') {
+          detailsContent.innerHTML = data.detailsHTML;
+          detailsToggleBtn.classList.add('visible');
+          detailsContent.classList.remove('open');
+          detailsToggleBtn.innerText = '🖼️ View Image Captions';
+        } else {
+          detailsContent.innerHTML = '';
+          detailsToggleBtn.classList.remove('visible');
+          detailsContent.classList.remove('open');
+        }
+
+        card.style.display = 'block';
+        hint.style.display = 'block';
+        hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+      }
+
+      function handleTargetFound(targetIndex) {
+        if (!isFrozen) {
+          panelSelector.value = targetIndex; 
+          loadPanelData(targetIndex);
+        }
+      }
+
+      function handleTargetLost() {
+        if (!isFrozen) {
+          card.style.display = 'none';
+          hint.style.display = 'none';
+          panelSelector.value = "";
+        }
+      }
+
+      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      activeTargets.forEach(i => {
+        let targetEl = document.getElementById('target-' + i);
+        if (targetEl) {
+          targetEl.addEventListener('targetFound', () => handleTargetFound(i));
+          targetEl.addEventListener('targetLost', handleTargetLost);
+        }
+      });
+
+      // Comportamento identico ad ar_old.html: cliccando fuori dalla card (e fuori dalla barra top/modale) si attiva/disattiva il Freeze
+      document.addEventListener('click', (e) => {
+        if (card.contains(e.target) || e.target.closest('#top-nav') || e.target.closest('#modal-sala2')) return;
+        
+        if (card.style.display === 'block') {
+          isFrozen = !isFrozen;
+          card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+          hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        }
+      });
+
+      panelSelector.addEventListener('change', (e) => {
+        const selectedIndex = e.target.value;
+        if (selectedIndex !== "") {
+          isFrozen = true;
+          loadPanelData(selectedIndex);
+        } else {
+          isFrozen = false;
+          handleTargetLost();
+        }
+      });
+
+      btnSala2.addEventListener('click', () => {
+        modalSala2.classList.add('open');
+      });
+      
+      btnCloseSala2.addEventListener('click', () => {
+        modalSala2.classList.remove('open');
+      });
+
+    </script>
+  </body>
+</html>
