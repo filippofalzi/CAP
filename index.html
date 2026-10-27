@@ -32,7 +32,7 @@
       max-width: 90%;
       width: 400px;
       text-align: center;
-      max-height: 85vh;
+      max-height: 95vh;
       overflow-y: auto;
       padding-bottom: 20px;
     }
@@ -45,7 +45,6 @@
       margin-bottom: 20px;
     }
     
-    /* Nuovo titolo generale per la stanza */
     .room-title {
       font-family: 'Arial Black', sans-serif;
       font-size: 24px;
@@ -59,7 +58,7 @@
       font-family: 'Arial', sans-serif;
       font-size: 14px;
       color: var(--cap-teal);
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       font-weight: bold;
       letter-spacing: 1px;
       text-transform: uppercase;
@@ -69,12 +68,12 @@
       display: flex;
       align-items: flex-start;
       text-align: left;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       font-size: 14px;
       line-height: 1.5;
       color: #555;
       background: #ffffff;
-      padding: 18px;
+      padding: 16px;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.04);
       border-left: 4px solid var(--cap-teal);
@@ -93,9 +92,17 @@
       line-height: 1.2;
     }
 
+    /* Stile per la tua illustrazione SVG */
+    .custom-illustration {
+      width: 100%;
+      max-width: 280px;
+      margin: 15px auto;
+      display: block;
+    }
+
     .btn {
       display: block;
-      margin-top: 15px;
+      margin-top: 20px;
       padding: 16px 32px;
       background: var(--cap-teal);
       color: white;
@@ -120,17 +127,18 @@
       <!-- Logo istituzionale -->
       <img src="logo.png" alt="Centro Arte para la Paz Logo" class="logo-img">
       
-      <!-- Intestazione generale, senza riferimenti a un solo elemento -->
       <h1 class="room-title">Museo Suchitoto</h1>
       <div class="room-subtitle">Interactive English Guide</div>
       
       <div class="instruction">
         <span class="icon">📸</span>
         <div>
-          <strong>Scan the panels</strong>
-          Point your camera at the exhibition panels to reveal real-time English translations.
+          <strong>Scan the whole panel</strong>
+          Frame the entire exhibition panel with your camera to reveal real-time English translations.
         </div>
       </div>
+
+      <img src="Scan_Panel_Illustartion.svg" alt="Scan the panel illustration" class="custom-illustration">
 
       <div class="instruction">
         <span class="icon">👆</span>
