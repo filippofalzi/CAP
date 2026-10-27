@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Museo Suchitoto | AR Tour</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      :root {
+        --cap-teal: #1a7179;
+        --cap-orange: #eba03b;
+        --ui-bg: rgba(26, 26, 24, 0.95);
+      }
+
+      body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
+      
+      /* --- NAVIGAZIONE SUPERIORE --- */
+      #top-nav {
+        position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+        width: 95%; max-width: 500px; display: flex; justify-content: space-between;
+        gap: 10px; z-index: 9999;
+      }
+
+      #panel-selector {
+        flex: 1; padding: 12px; border-radius: 8px; border: 2px solid var(--cap-teal);
+        background: var(--ui-bg); color: white; font-weight: bold; font-size: 14px;
+        appearance: none; outline: none; cursor: pointer; text-align: center;
+      }
+
+      #btn-sala2 {
+        background: var(--cap-orange); color: white; border: none; padding: 0 20px;
+        border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer;
+        text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      }
+
+      /* --- HINT E CARD AR --- */
+      #ui-hint {
+        display: none; position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.7); color: white; padding: 8px 16px;
+        border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;
+        letter-spacing: 0.5px; z-index: 9998; pointer-events: none; text-align: center;
+      }
+
+      #museum-card {
+        display: none; position: fixed; bottom: 5vh; left: 50%; transform: translateX(-50%);
+        width: 92%; max-width: 420px; background: var(--ui-bg); color: #f5f5f5;
+        border-radius: 12px; border-top: 5px solid var(--cap-teal);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8); z-index: 99999;
+        max-height: 60vh; overflow-y: auto; pointer-events: auto;
+        padding: 24px; box-sizing: border-box; text-align: left;
+      }
+
+      #museum-card::-webkit-scrollbar { width: 0px; }
+
+      .badge {
+        background: var(--cap-teal); color: white; padding: 4px 8px; border-radius: 4px;
+        font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block;
+      }
+
+      .wall-title { font-family: 'Arial Black', sans-serif; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 15px 0; line-height: 1.2; color: white;}
+      
+      /* Colori per le sezioni */
+      .t1 { color: #442a22; } .t2 { color: #5a382c; } .t3 { color: #9c4533; } .t4 { color: #872a23; } .t5 { color: #5f2821; } .t6 { color: #40241b; }
+      .f1 { color: #822b27; } .f2 { color: #9c4533; } .f3 { color: #b85d29; } .f4 { color: #eba03b; }
+      .a1 { color: #5a733e; } .a2 { color: #3b5c32; } .a3 { color: #234728; } .a4 { color: #183820; } 
+      .w1 { color: #1e6b7b; } .w2 { color: #288494; } .w3 { color: #1a5c68; } .w4 { color: #12404b; }
+
+      #dynamic-text p { font-size: 16px; line-height: 1.6; margin: 0 0 12px 0; color: #e9e5dc; }
+      #dynamic-text p strong { color: #ffffff; }
+
+      /* --- BOTTONE DINAMICO IMMAGINI --- */
+      #details-toggle {
+        display: none; background: transparent; border: 2px solid var(--cap-orange); color: var(--cap-orange);
+        padding: 10px 14px; border-radius: 6px; font-size: 13px; font-weight: bold;
+        text-transform: uppercase; cursor: pointer; margin-top: 15px; width: 100%;
+        transition: all 0.2s; text-align: center;
+      }
+      #details-toggle.visible { display: block; }
+      #details-toggle:active { background: var(--cap-orange); color: white; }
+      
+      #details-content {
+        display: none; margin-top: 15px; padding: 15px; border-radius: 8px;
+        background: rgba(255,255,255,0.05); border-left: 3px solid var(--cap-orange);
+        font-size: 14px; line-height: 1.6; color: #d0c7bd;
+      }
+      #details-content.open { display: block; }
+      #details-content p { margin: 0 0 10px 0; }
+      #details-content p:last-child { margin: 0; }
+
+      /* --- MODALE SALA 2 (TIMELINE) --- */
+      #modal-sala2 {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #f2efe9; z-index: 999999; overflow-y: auto; padding: 20px; box-sizing: border-box;
+      }
+      #modal-sala2.open { display: block; }
+      
+      .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 15px; margin-bottom: 20px; }
+      .modal-title { font-family: 'Arial Black', sans-serif; font-size: 22px; color: #442a22; margin: 0; text-transform: uppercase; }
+      
+      #btn-close-sala2 {
+        background: #442a22; color: white; border: none; padding: 8px 15px;
+        border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+      }
+      .timeline-placeholder { text-align: center; color: #666; margin-top: 50px; font-size: 18px; }
+
+    </style>
+  </head>
+  <body>
+    
+    <div id="top-nav">
+      <select id="panel-selector">
+        <option value="">-- Select Panel --</option>
+        <option value="0">Intro: Tierra hay una sola</option>
+        <option value="1">Intro: Soplo de vida</option>
+        <option value="2">Tierra 1: Madre Tierra</option>
+        <option value="3">Tierra 2: Dulces los cañales</option>
+        <option value="4">Tierra 3: Suelos para comer</option>
+        <option value="5">Fuego 1: Quema y arrasa</option>
+        <option value="6">Fuego 2: Calor que transforma</option>
+        <option value="7">Aire 1: Rutas del viento</option>
+        <option value="8">Aire 2: Un mal soplo</option>
+        <option value="9">Aire 3: Las abejas</option>
+        <option value="10">Agua 1: Planeta Azul</option>
+        <option value="11">Agua 2: Vida en el lago</option>
+        <option value="12">Agua 3: Huella hídrica</option>
+        <option value="13">Agua 4: Peces fuera del agua</option>
+      </select>
+      <button id="btn-sala2">Timeline</button>
+    </div>
+
+    <div id="modal-sala2">
+      <div class="modal-header">
+        <h2 class="modal-title">Sala 2: Timeline</h2>
+        <button id="btn-close-sala2">Close ✕</button>
+      </div>
+      <div class="timeline-placeholder">
+        [Timeline / Modale Sala 2 in lavorazione...]
+      </div>
+    </div>
+
+    <div id="ui-hint">👆 Tap to lock</div>
+
+    <div id="museum-card">
+      <span class="badge" id="card-badge">Spanish (Draft)</span>
+      <div id="dynamic-title"></div>
+      <div id="dynamic-text"></div>
+      
+      <button id="details-toggle">🖼️ View Image Captions</button>
+      <div id="details-content"></div>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: ./minds/targets.mind; filterMinCF: 0.001; filterBeta: 0.001;" 
+             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+      <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
+      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
+      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
+      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
+      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
+      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
+      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
+      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
+      <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
+      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
+      <a-entity id="target-12" mindar-image-target="targetIndex: 12"></a-entity>
+      <a-entity id="target-13" mindar-image-target="targetIndex: 13"></a-entity>
+    </a-scene>
+
+    <script>
+      let isFrozen = false;
+      const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
+      const titleContainer = document.getElementById('dynamic-title');
+      const textContainer = document.getElementById('dynamic-text');
+      const detailsToggleBtn = document.getElementById('details-toggle');
+      const detailsContent = document.getElementById('details-content');
+      const panelSelector = document.getElementById('panel-selector');
+      
+      const modalSala2 = document.getElementById('modal-sala2');
+      const btnSala2 = document.getElementById('btn-sala2');
+      const btnCloseSala2 = document.getElementById('btn-close-sala2');
+
+      const exhibitionData = {
+        0: { 
+          titleHTML: \`<h1 class="wall-title" style="color: white;">INTRODUCCIÓN</h1>\`,
+          textHTML: \`<p><strong>Tierra hay una sola</strong><br>A MEDIADOS del siglo pasado, se extendió un modelo de producción que prometía más comodidad, bienestar y acceso al alimento para todas las personas. Sin embargo, este modelo venía acompañado de un uso desmedido de agroquímicos, tala indiscriminada, saqueo de agua y contaminación.</p><p>La promesa de terminar con el hambre nunca se hizo realidad. En El Salvador, se pierden 12.000 millones m2 de agua de lluvia a causa de la deforestación y se talan 4.500 hectáreas al año. <strong>Es hora de poner la vida en el centro.</strong></p>\`,
+          detailsHTML: \`\`
+        },
+        1: { 
+          titleHTML: \`<h1 class="wall-title" style="color: white;">INTRODUCCIÓN</h1>\`,
+          textHTML: \`<p><strong>Con un soplo se apagan millones de años de vida</strong><br>Toda la complejidad que encierra la Tierra es el resultado espectacular de una cadena de transformaciones en las que el fuego, agua, viento y partículas de roca, se confabularon hasta llegar aquí.</p><p>La Tierra está terminada hace 20 millones de años. Necesitó un tiempo incalculable para encontrar el equilibrio, y en menos de un siglo, la humanidad quizá sea la responsable de su extinción.</p><p>La responsabilidad de cambiar el rumbo es compartida, a fin de cuentas, la Tierra sobrevivirá 4,500 millones de años mas y sabrá como regenerarse sin la humanidad.</p>\`,
+          detailsHTML: \`<p><strong>Volcanes:</strong> escupieron la lava, que al enfriarse, formó la superficie terrestre.</p><p><strong>Meteoritos:</strong> llenaron de vida el agua, haciendo florecer criaturas acuáticas. Algunas, gatearon hasta al suelo para convertirlo en su hogar; y así evolucionaron.</p><p><strong>Viento:</strong> se encargó de repartir las semillas que propagaron la vegetación.</p>\`
+        },
+        2: { 
+          titleHTML: \`<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>\`,
+          textHTML: \`<p><strong>Madre Tierra</strong><br>HACE MUCHO TIEMPO, antes de ser El Salvador, este territorio estuvo habitado por los pueblos originarios. Ellos nombran el lugar como "Nuestra Madre Tierra" (Tunan Tal), donde se crea la vida y se provee agua.</p><p>LA VEGETACIÓN es para el planeta lo que la piel para nuestros cuerpos: mantiene la temperatura, regenera el aire, protege el agua y alimenta. La Tierra se ve solo como un "baúl lleno de recursos" de donde sacar sin límite, pero lo que sale de este baúl se agota, y sin él no es posible la vida.</p><p><strong>Estadísticas de deforestación:</strong> El Salvador es el segundo país más deforestado de América Latina. Solo el 1% es área protegida, frente al 10% recomendado.</p>\`,
+          detailsHTML: \`<p><strong>Mirar la Tierra:</strong> Kinkajú o martucha: esta especie de mamífero habita los territorios de Cabañas y Cinquera.</p><p><strong>Cosecha de Oxígeno:</strong> Parque Nacional El Imposible: el oxígeno y la buena tierra dependen de la vegetación, la vegetación depende del agua para nutrirse, y del agua dependen las criaturas que la habitan.</p><p><strong>Compañía en Casa:</strong> Patos domésticos: forman parte de la vida rural del territorio. Comparten casa con cerdos, gallinas, cabras, otros animales de corral y, por supuesto, personas.</p>\`
+        },
+        3: { 
+          titleHTML: \`<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>\`,
+          textHTML: \`<p><strong>No tan dulces los cañales</strong><br>LA TIERRA es como la piel. Si un cuerpo se humedece cada día con insecticida, es bastante probable que termine enfermando. Va absorbiendo todos los tóxicos que la riegan. El veneno se acumula hasta que un día se vuelve infértil y muere.</p><p>Plantaciones de caña con lógica industrial: arrasa tierras, arrastra enfermedades respiratorias por quemas y uso de agroquímicos. Los cultivos extensivos usan grandes cantidades de agua subterránea, que dejan en sequía a las comunidades.</p><p>LOS DERIVADOS del jugo de caña que ofrece un trapiche tradicional son naturales y libres de agroquímicos. La producción es artesanal y promueve el consumo local.</p>\`,
+          detailsHTML: \`<p><strong>Raíces:</strong> abrazadas por la tierra o surcando túneles, las raíces sostienen el entramado de suelos y transportan alimento.</p><p><strong>La vida en el centro:</strong> Iguanas en Cinquera. Ponerla en el centro supone mimarla, respetar sus tiempos, sus necesidades y transformar la relación con la naturaleza.</p><p><strong>Árboles comestibles:</strong> Ramas suculentas. Plantar frutales variados es asegurar sus beneficios. Dan sombra, madera y son un complemento alimenticio.</p>\`
+        },
+        4: { 
+          titleHTML: \`<h1 class="wall-title"><span class="t1">T</span><span class="t2">I</span><span class="t3">E</span><span class="t4">R</span><span class="t5">R</span><span class="t6">A</span></h1>\`,
+          textHTML: \`<p><strong>Suelos para comer</strong><br>AL MIRAR EL CAMPO se vislumbra cómo la agroindustria está acabando con el territorio. Lo deteriora y no llega a solventar las necesidades alimentarias de la mayoría.</p><p><strong>La Milpa:</strong> Frijol, maíz, chile, ayote. Se siembran plantas, granos y frutos que se van nutriendo entre ellas. Esta práctica ancestral asegura la cosecha, una alimentación variada y el buen uso de la tierra.</p><p>Iniciativas locales y naturaleza: Cultivo de caña y trapiche tradicional en San Antonio, Municipio de Suchitoto. Con esta iniciativa se mantiene una tradición que promueve la soberanía de cultivos y ofrece productos sanos a la comunidad.</p>\`,
+          detailsHTML: \`\`
+        },
+        5: { 
+          titleHTML: \`<h1 class="wall-title"><span class="f1">F</span><span class="f2">U</span><span class="f3">E</span><span class="f4">G</span><span class="f1">O</span></h1>\`,
+          textHTML: \`<p><strong>Quema y arrasa</strong><br>En los meses de abril, la quema de maleza es una práctica muy extendida. EL FUEGO quema la maleza, pero también mata a millones de pequeños organismos que nutren la tierra. El suelo se vuelve infértil y se inunda de químicos.</p><p><strong>Combustibles y minería</strong><br>Los combustibles fósiles (carbón, petróleo y gas natural) provienen de la descomposición milenaria de materia orgánica. Al ser recursos que se agotan, su uso genera un grave problema de sostenibilidad.</p><p>Impacto minero: Implica daños irreversibles traducidos en sobrecalentamiento global e impacto socioeconómico.</p>\`,
+          detailsHTML: \`<p><strong>Volcán de Izalco:</strong> considerado el más joven del territorio, se ubica al sur de Santa Ana. Llamado el Faro del Pacífico.</p><p><strong>Lava:</strong> el líquido fundido, compuesto de metales pesados, se mueve dentro del núcleo sólido de la masa terrestre.</p><p><strong>El suelo protector (Hongos):</strong> su rápido crecimiento por debajo de la tierra hace de los hongos buenos transportadores de nutrientes minerales a las raíces.</p>\`
+        },
+        6: { 
+          titleHTML: \`<h1 class="wall-title"><span class="f1">F</span><span class="f2">U</span><span class="f3">E</span><span class="f4">G</span><span class="f1">O</span></h1>\`,
+          textHTML: \`<p><strong>Calor que transforma y alimenta</strong><br>ELEMENTO transformador y sagrado en casi todas las culturas. De este elemento primigenio surge la creación del planeta y la posibilidad de hacer del alimento algo más que mera supervivencia.</p><p>Fuego en comunidad: Cocinar los alimentos permitió optimizar sus nutrientes, hacer el acto de comer más sociable, permitir la migración y forjar identidades a partir de la comida. El control del fuego por el Homo Erectus hace 800.000 años supuso sobrevivir al frío y fortalecer las interacciones sociales y el lenguaje.</p><p>La cocina primitiva: Se pasó de asar carne y pescado a usar vasijas de barro para cocer y preparar sopas, lo que incrementó las calorías y mejoró la esperanza de vida.</p>\`,
+          detailsHTML: \`<p><strong>Alternativas amigables:</strong> Frente al consumo incontrolable de plástico, existen opciones más amables con el entorno como utensilios de barro, guacales de morro, hojas de huerta o canastas de fibras naturales.</p>\`
+        },
+        7: { 
+          titleHTML: \`<h1 class="wall-title"><span class="a1">A</span><span class="a2">I</span><span class="a3">R</span><span class="a4">E</span></h1>\`,
+          textHTML: \`<p><strong>Las rutas del viento</strong><br>TODOS los elementos de la naturaleza influyen en la agricultura y tienen impacto en la alimentación. Los vientos son caminos por donde se desplazan las aves, determinando su migración y la dispersión de semillas.</p><p>Viento suave: Mece las plantas dándoles fortaleza, guía el agua hacia la atmósfera y transporta polen. Viento fuerte: Quiebra ramas, impide la polinización y esparce tóxicos si pasa por zonas con plaguicidas.</p><p><strong>Ciudad y contaminación acústica:</strong> El tráfico urbano sigue aumentando. Si a esto se suma la contaminación acústica, el panorama es desolador: la ciudad se enferma y se vuelve agresiva con la naturaleza y la salud de quienes la habitan.</p>\`,
+          detailsHTML: \`<p><strong>Equilibrio en el vuelo:</strong> aves, aviones y helicópteros usan las mismas autopistas aéreas.</p><p><strong>El olor del viento:</strong> hacen falta fortalezas verdes, bosques por lo que respire la tierra y limpien los malos olores que la industria provoca.</p><p><strong>La fragilidad del entorno:</strong> el algodón es uno de los cultivos más contaminantes. Requiere grandes cantidades de herbicidas y agua.</p><p><strong>Algunos pican flores:</strong> Zancudos. Estos molestos bichitos también son atraídos por flores y chupan su néctar.</p>\`
+        },
+        8: { 
+          titleHTML: \`<h1 class="wall-title"><span class="a1">A</span><span class="a2">I</span><span class="a3">R</span><span class="a4">E</span></h1>\`,
+          textHTML: \`<p><strong>Un mal soplo al aire</strong><br>EL CLIMA tiene variaciones naturales, pero la comunidad científica alerta de cómo las actividades humanas alteran los elementos que componen el aire.</p><p>TRANSPORTE, ganadería, industria y residuos producen gases nocivos que alteran la temperatura y propagan enfermedades como el chagas o el dengue.</p><p>En nuestra región, el cambio climático intensifica la "canícula", provocando sequías prolongadas o lluvias intensas que destruyen las cosechas de maíz y frijol, afectando a la agricultura de subsistencia. El 95,4% de la población se encuentra en territorio de riesgo.</p>\`,
+          detailsHTML: \`<p><strong>Selva tropical:</strong> Con cada árbol cortado, la de animales y plantas que le habitan, también desaparecen. La agroindustria de ganado, palma y soja, las edificaciones sin limites, proyectos petroleros o mineros están acabando con los pulmones de la tierra.</p>\`
+        },
+        9: { 
+          titleHTML: \`<h1 class="wall-title"><span class="a1">A</span><span class="a2">I</span><span class="a3">R</span><span class="a4">E</span></h1>\`,
+          textHTML: \`<p><strong>Las abejas y la polinización</strong><br>LA MIEL en el pan, la tortilla con frijoles, el jugo de naranja o el café de la mañana: es probable que en este desayuno hayan intervenido algunas abejas. Más del 75 por ciento de los cultivos del mundo dependen de los animales que transfieren su polen.</p><p>Las abejas han sido declaradas patrimonio por la ONU al ser clave en los ciclos que mantienen con vida el planeta. Sin embargo, las abejas están en peligro por la pérdida de su hogar y el uso de pesticidas que las matan.</p>\`,
+          detailsHTML: \`<p><strong>La polinización:</strong> los insectos chupan el néctar de las flores, recogen polen con sus patas, alas y antenas. El polen viaja desde el órgano reproductor de una flor hasta la flor en la que germinará, haciendo que las plantas se multipliquen por la tierra.</p>\`
+        },
+        10: { 
+          titleHTML: \`<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span></h1>\`,
+          textHTML: \`<p><strong>Planeta Azul y Cemento</strong><br>El 71% de la superficie está cubierta de agua. El 3% es agua dulce apta para consumo humano. De las aguas saladas obtenemos la mitad del oxígeno que respiramos. El agua está mal repartida y su mal uso nos enfrenta a un futuro seco.</p><p>Cemento que chupa y seca: actúa como una capa plástica que impide la infiltración del agua. Debajo mueren la vegetación y las tierras fértiles.</p><p><strong>Cuencas y Acuíferos</strong><br>El abastecimiento principal de agua potable se realiza por aguas subterráneas, que tienen mejor calidad. Sin embargo, esto no es posible si las fuentes se llenan de residuos de grandes empresas que extraen el agua de los pozos y vierten desechos en ríos.</p>\`,
+          detailsHTML: \`<p><strong>Planeta Azul:</strong> desde muy arriba, el Planeta Azul evidencia la vasta cantidad de agua que lo envuelve.</p><p><strong>Profunda claridad:</strong> océanos. Ocupan la mayor superficie del planeta y albergan 250.000 especies. La vida marina permite la subsistencia de las comunidades costeras.</p><p><strong>Espejo de Agua (Laguna de Olomega):</strong> zona natural protegida, es el espacio más grande de agua dulce de Oriente.</p><p><strong>Malos hábitos:</strong> un grupo familiar usa 800 litros de agua al día. Fugas en el inodoro (100 a 1000 litros/día).</p>\`
+        },
+        11: { 
+          titleHTML: \`<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span></h1>\`,
+          textHTML: \`<p><strong>Se ahoga la vida en el lago</strong><br>La presa hidroeléctrica de Cerrón Grande es conocida como "Lago Suchitlán". Nutrido por el río Lempa y construido en 1976, esta intervención causó el desplazamiento de miles de personas y rompió el equilibrio natural.</p><p>A este lago llegan alrededor de 3.800 toneladas de basura al año. La introducción del Jacinto de Agua y de la Tilapia (que traga desperdicios y metales pesados) generó un desequilibrio y crecimiento descontrolado.</p><p><strong>El agua que bebe Suchitoto</strong><br>Del caudal de los ríos que se desprenden de los cerros Tecomatepeque y Guazapa depende el mantenimiento de las zonas de recarga acuífera. Parar la tala de árboles son acciones básicas para conservar la tierra y el agua.</p>\`,
+          detailsHTML: \`<p><strong>Las formas del agua:</strong> Cuenca del río Lempa. Es la más importante de la región, pero su alto grado de contaminación afecta a quienes habitan sus orillas.</p><p><strong>Habitat del lago:</strong> Garza Blanca en Suchitlán. Las plácidas aguas del embalse acogen a miles de aves migratorias.</p><p><strong>Cobijo de fuentes:</strong> Manantiales. Por ríos y arroyos circula el agua en la tierra, como la sangre por las venas.</p>\`
+        },
+        12: { 
+          titleHTML: \`<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span></h1>\`,
+          textHTML: \`<p><strong>Agua necesaria para...</strong><br>PRODUCIR a gran escala a un bajo coste significa utilizar regadíos y maquinaria que gastan grandes cantidades de agua. En estas cadenas de producción, cada gota utilizada equivale casi al 70% de la huella hídrica mundial.</p><p>Se riegan pastos o cereales, que luego serán procesados para alimentar a los animales. Estos animales se llevan al matadero, se destasan, se empacan hasta llegar al supermercado.</p><p>¿HUELLA HÍDRICA? Indicador medioambiental que mide el agua dulce empleada en el proceso de producción de un objeto, alimento o servicio. Es un buen punto de partida para concienciar sobre un manejo eficaz del agua.</p>\`,
+          detailsHTML: \`<p><strong>1 K. pollo:</strong> 4.300 litros</p><p><strong>1 K. carne:</strong> 15.000 litros</p><p><strong>1 L. leche:</strong> 1.000 litros</p><p><strong>1 K. azúcar:</strong> 750 litros</p><p><strong>1 Taza Café:</strong> 840 litros</p><p><strong>1 Pantalón:</strong> 10.850 litros</p>\`
+        },
+        13: { 
+          titleHTML: \`<h1 class="wall-title"><span class="w1">A</span><span class="w2">G</span><span class="w3">U</span><span class="w4">A</span></h1>\`,
+          textHTML: \`<p><strong>Los peces fuera del agua</strong><br>EN EL CAUCE del río Lempa convivían variedades de especies que eran alimento para pescadores y equilibrio natural de la fauna marina.</p><p>Con la creación del embalse llegó la Tilapia. Este pez depredador no es propio de la zona ni vino con el cauce del río: fue traído de lejos y metido a la fuerza al lago, inundando las aguas, devorando las especies autóctonas y generando un desastre ecológico.</p>\`,
+          detailsHTML: \`\`
+        }
+      };
+
+      detailsToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        detailsContent.classList.toggle('open');
+        detailsToggleBtn.innerText = detailsContent.classList.contains('open') ? '▲ Close Captions' : '🖼️ View Image Captions';
+      });
+
+      function loadPanelData(index) {
+        const data = exhibitionData[index];
+        if (!data) return;
+
+        titleContainer.innerHTML = data.titleHTML;
+        textContainer.innerHTML = data.textHTML;
+        
+        if (data.detailsHTML && data.detailsHTML.trim() !== '') {
+          detailsContent.innerHTML = data.detailsHTML;
+          detailsToggleBtn.classList.add('visible');
+          detailsContent.classList.remove('open');
+          detailsToggleBtn.innerText = '🖼️ View Image Captions';
+        } else {
+          detailsContent.innerHTML = '';
+          detailsToggleBtn.classList.remove('visible');
+          detailsContent.classList.remove('open');
+        }
+
+        card.style.display = 'block';
+        hint.style.display = 'block';
+        hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+      }
+
+      function handleTargetFound(targetIndex) {
+        if (!isFrozen) {
+          panelSelector.value = targetIndex; 
+          loadPanelData(targetIndex);
+        }
+      }
+
+      function handleTargetLost() {
+        if (!isFrozen) {
+          card.style.display = 'none';
+          hint.style.display = 'none';
+          panelSelector.value = "";
+        }
+      }
+
+      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      activeTargets.forEach(i => {
+        let targetEl = document.getElementById('target-' + i);
+        if (targetEl) {
+          targetEl.addEventListener('targetFound', () => handleTargetFound(i));
+          targetEl.addEventListener('targetLost', handleTargetLost);
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (card.contains(e.target) || e.target.closest('#top-nav') || e.target.closest('#modal-sala2')) return;
+        
+        if (card.style.display === 'block') {
+          isFrozen = !isFrozen;
+          card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+          hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        }
+      });
+
+      panelSelector.addEventListener('change', (e) => {
+        const selectedIndex = e.target.value;
+        if (selectedIndex !== "") {
+          isFrozen = true;
+          loadPanelData(selectedIndex);
+        } else {
+          isFrozen = false;
+          handleTargetLost();
+        }
+      });
+
+      btnSala2.addEventListener('click', () => {
+        modalSala2.classList.add('open');
+      });
+      
+      btnCloseSala2.addEventListener('click', () => {
+        modalSala2.classList.remove('open');
+      });
+
+    </script>
+  </body>
+</html>
