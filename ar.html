@@ -15,7 +15,7 @@
 
       body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
       
-   /* --- NAVIGAZIONE SUPERIORE (A prova di schermi piccoli) --- */
+      /* --- Navegación superior --- */
       #top-nav {
         position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
         width: 94%; max-width: 500px; display: flex; justify-content: space-between;
@@ -23,7 +23,7 @@
       }
 
       #panel-selector {
-        flex: 1; min-width: 0; /* FONDAMENTALE: impedisce al select di spingere fuori il bottone */
+        flex: 1; min-width: 0; 
         padding: 10px 8px; border-radius: 8px; border: 2px solid var(--cap-teal);
         background: var(--ui-bg); color: white; font-weight: bold; font-size: 13px;
         appearance: none; outline: none; cursor: pointer; text-align: center;
@@ -37,7 +37,7 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center;
       }
 
-      /* --- HINT E CARD AR (Stile identico a ar_old.html, ma abbassato a top: 70px per non sbattere contro il menu) --- */
+      /* --- HINT E CARD AR  --- */
       #ui-hint {
         display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
         background: rgba(20, 24, 25, 0.6); color: rgba(255, 255, 255, 0.9); padding: 8px 16px;
@@ -67,7 +67,7 @@
 
       .wall-title { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; color: white;}
       
-      /* Colori per le sezioni (Terra, Fuoco, Aria, Acqua) */
+      /* Colores para titulos (Tierra, Fuego, Aire, Agua) */
       .t1 { color: #442a22; } .t2 { color: #5a382c; } .t3 { color: #9c4533; } .t4 { color: #872a23; } .t5 { color: #5f2821; } .t6 { color: #40241b; }
       .f1 { color: #822b27; } .f2 { color: #9c4533; } .f3 { color: #b85d29; } .f4 { color: #eba03b; }
       .a1 { color: #5a733e; } .a2 { color: #3b5c32; } .a3 { color: #234728; } .a4 { color: #183820; } 
@@ -76,7 +76,7 @@
       #dynamic-text p { font-size: 17px; line-height: 1.6; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
       #dynamic-text p strong { color: #ffffff; }
 
-      /* --- BOTTONE DINAMICO IMMAGINI (In alto sopra il testo principale) --- */
+      /* --- Botón dinamico imagenes (antes del texto principal) --- */
       #details-toggle {
         display: none; background: rgba(235, 160, 59, 0.15); border: 1.5px solid var(--cap-orange); color: var(--cap-orange);
         padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
@@ -95,7 +95,7 @@
       #details-content p { margin: 0 0 10px 0; }
       #details-content p:last-child { margin: 0; }
 
-      /* --- MODALE SALA 2 (TIMELINE) --- */
+      /* --- Botón SALA 2 (TIMELINE) --- */
       #modal-sala2 {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: #f2efe9; z-index: 999999; overflow-y: auto; padding: 20px; box-sizing: border-box;
@@ -115,7 +115,7 @@
   </head>
   <body>
     
-    <!-- Barra superiore: Menu a tendina + Bottone Room 2 Timeline -->
+    <!-- Barra superior: Menu + botón Room 2 Timeline -->
     <div id="top-nav">
       <select id="panel-selector">
         <option value="">-- Select Panel --</option>
@@ -137,7 +137,7 @@
       <button id="btn-sala2">Room 2<br>Timeline</button>
     </div>
 
-    <!-- Modale Sala 2 -->
+    <!-- Modal Sala 2 -->
     <div id="modal-sala2">
       <div class="modal-header">
         <h2 class="modal-title">Room 2: Timeline</h2>
@@ -148,19 +148,19 @@
       </div>
     </div>
 
-    <!-- Hint Tap to Lock (Esattamente come in ar_old.html) -->
+    <!-- Botón Tap to Lock  -->
     <div id="ui-hint">👆 Tap to lock</div>
 
-    <!-- Card Principale -->
+    <!-- Card Principal -->
     <div id="museum-card">
       <span class="badge" id="card-badge">English</span>
       <div id="dynamic-title"></div>
       
-      <!-- Bottone Didascalie Immagini posizionato IN ALTO sotto il titolo -->
+      <!-- Botón Imagenes antes texto principal -->
       <button id="details-toggle">🖼️ View Image Captions</button>
       <div id="details-content"></div>
 
-      <!-- Testo Principale della Tavola -->
+      <!-- Texto principal de cada tabla -->
       <div id="dynamic-text"></div>
     </div>
 
@@ -199,7 +199,7 @@
       const btnSala2 = document.getElementById('btn-sala2');
       const btnCloseSala2 = document.getElementById('btn-close-sala2');
 
-      // TUTTI I TESTI INTEGRALI ESTRATTI DAL PDF "Texto Final.pdf"
+      // TEXTOS TABLAS
       const exhibitionData = {
         0: { 
           titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">Tierra hay una sola</h1>`,
@@ -430,8 +430,8 @@
         card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
       }
 
-      let currentlyTrackedTarget = null; // Tiene traccia se la fotocamera vede davvero un pannello
-
+      let currentlyTrackedTarget = null; 
+      
       function handleTargetFound(targetIndex) {
         currentlyTrackedTarget = targetIndex;
         if (!isFrozen) {
@@ -460,7 +460,7 @@
         }
       });
 
-      // Tap sullo schermo per bloccare/sbloccare
+      // Tap para bloquear plantalla
       document.addEventListener('click', (e) => {
         if (card.contains(e.target) || e.target.closest('#top-nav') || e.target.closest('#modal-sala2')) return;
         
@@ -468,14 +468,12 @@
           isFrozen = !isFrozen;
           
           if (!isFrozen) {
-            // Se sblocco e la fotocamera NON sta inquadrando nessun pannello (es. selezione manuale), chiudi tutto!
             if (currentlyTrackedTarget === null) {
               card.style.display = 'none';
               hint.style.display = 'none';
               panelSelector.value = "";
               return;
             } else {
-              // Se invece sto inquadrando un pannello vero, mostra quello inquadrato
               panelSelector.value = currentlyTrackedTarget;
               loadPanelData(currentlyTrackedTarget);
             }
@@ -486,7 +484,7 @@
         }
       });
 
-      // Selezione manuale dal menu a tendina
+      // Selección manual en el menú desplegable
       panelSelector.addEventListener('change', (e) => {
         const selectedIndex = e.target.value;
         if (selectedIndex !== "") {
