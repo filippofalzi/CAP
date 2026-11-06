@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Museo Suchitoto | AR Tour</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      :root {
+        --cap-teal: #1a7179;
+        --cap-orange: #eba03b;
+        --ui-bg: rgba(26, 26, 24, 0.95);
+      }
+
+      body { margin: 0; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
+      
+      /* --- Top Navigation --- */
+      #top-nav {
+        position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+        width: 94%; max-width: 500px; display: flex; justify-content: space-between;
+        align-items: stretch; gap: 6px; z-index: 9999; box-sizing: border-box;
+      }
+
+      #panel-selector {
+        flex: 1; min-width: 0; 
+        padding: 10px 8px; border-radius: 8px; border: 2px solid var(--cap-teal);
+        background: var(--ui-bg); color: white; font-weight: bold; font-size: 13px;
+        appearance: none; outline: none; cursor: pointer; text-align: center;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+
+      #btn-sala2 {
+        flex-shrink: 0; background: var(--cap-orange); color: white; border: none; 
+        padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; 
+        line-height: 1.15; cursor: pointer; text-transform: uppercase; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center;
+      }
+
+      /* --- HINT & AR CARD --- */
+      #ui-hint {
+        display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+        background: rgba(20, 24, 25, 0.75); color: rgba(255, 255, 255, 0.95); padding: 8px 16px;
+        border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+        letter-spacing: 0.5px; z-index: 9998; pointer-events: auto; cursor: pointer;
+        text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      }
+
+      #museum-card {
+        display: none; position: fixed; bottom: 5vh; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 420px; background: var(--ui-bg); color: #f5f5f5;
+        border-radius: 12px; border-top: 5px solid var(--cap-teal);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8); z-index: 99999;
+        max-height: 60vh; overflow-y: auto; pointer-events: auto;
+        padding: 24px; box-sizing: border-box;
+        text-align: center;
+      }
+
+      #museum-card::-webkit-scrollbar { width: 0px; }
+
+      .badge {
+        background: var(--cap-teal); color: white; padding: 4px 8px; border-radius: 4px;
+        font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block;
+      }
+
+      #dynamic-title { margin: 0 0 12px 0; }
+
+      .wall-title { 
+        font-family: 'Impact', 'Arial Black', sans-serif; font-size: 32px; 
+        letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1.1; 
+        color: white; text-shadow: 0 1px 3px rgba(255,255,255,0.15);
+      }
+      
+      /* Colors for titles (Earth, Fire, Air, Water) */
+      .t1 { color: #442a22; } .t2 { color: #5a382c; } .t3 { color: #9c4533; } .t4 { color: #872a23; } .t5 { color: #5f2821; } .t6 { color: #40241b; }
+      .f1 { color: #822b27; } .f2 { color: #9c4533; } .f3 { color: #b85d29; } .f4 { color: #eba03b; }
+      .a1 { color: #5a733e; } .a2 { color: #3b5c32; } .a3 { color: #234728; } .a4 { color: #183820; } 
+      .w1 { color: #1e6b7b; } .w2 { color: #288494; } .w3 { color: #1a5c68; } .w4 { color: #12404b; }
+
+      #dynamic-text p { font-size: 17px; line-height: 1.6; margin: 0 0 12px 0; color: #d0c7bd; text-align: left; }
+      #dynamic-text p strong { color: #ffffff; }
+
+      /* --- Dynamic Image Captions Button --- */
+      #details-toggle {
+        display: none; background: rgba(235, 160, 59, 0.15); border: 1.5px solid var(--cap-orange); color: var(--cap-orange);
+        padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: bold;
+        text-transform: uppercase; cursor: pointer; margin: 0 0 15px 0; width: 100%;
+        transition: all 0.2s; text-align: center;
+      }
+      #details-toggle.visible { display: block; }
+      #details-toggle:active { background: var(--cap-orange); color: white; }
+      
+      #details-content {
+        display: none; margin: 0 0 18px 0; padding: 14px; border-radius: 8px;
+        background: rgba(255,255,255,0.06); border-left: 3px solid var(--cap-orange);
+        font-size: 14px; line-height: 1.5; color: #e9e5dc; text-align: left;
+      }
+      #details-content.open { display: block; }
+      #details-content p { margin: 0 0 10px 0; }
+      #details-content p:last-child { margin: 0; }
+
+      /* --- Room 2 Button (TIMELINE) --- */
+      #modal-sala2 {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #f2efe9; z-index: 999999; overflow-y: auto; padding: 20px; box-sizing: border-box;
+      }
+      #modal-sala2.open { display: block; }
+      
+      .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 15px; margin-bottom: 20px; }
+      .modal-title { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #442a22; margin: 0; text-transform: uppercase; }
+      
+      #btn-close-sala2 {
+        background: #442a22; color: white; border: none; padding: 8px 15px;
+        border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+      }
+      .timeline-placeholder { text-align: center; color: #666; margin-top: 50px; font-size: 18px; }
+    </style>
+  </head>
+  <body>
+    
+    <!-- Top bar: Menu + Room 2 Timeline button -->
+    <div id="top-nav">
+      <select id="panel-selector">
+        <option value="">-- Select Panel --</option>
+        <option value="0">Intro 0: There is only one Earth</option>
+        <option value="1">Intro 1: With a single breath</option>
+        <option value="2">Earth 1: Mother Earth</option>
+        <option value="3">Earth 2: Not so sweet, the sugarcane fields</option>
+        <option value="4">Earth 3: Soils to eat</option>
+        <option value="5">Fire 1: Burns &amp; Fuels</option>
+        <option value="6">Fire 2: Heat that transforms</option>
+        <option value="7">Air 1: The routes of the wind</option>
+        <option value="8">Air 2: A bad breath into the air</option>
+        <option value="9">Air 3: Bees and pollination</option>
+        <option value="10">Water 1: Blue Planet and Cement</option>
+        <option value="11">Water 2: Life drowns in the lake</option>
+        <option value="12">Water 3: Water footprint</option>
+        <option value="13">Water 4: Fish out of water</option>
+      </select>
+      <button id="btn-sala2">Room 2<br>Timeline</button>
+    </div>
+
+    <!-- Modal Room 2 -->
+    <div id="modal-sala2">
+      <div class="modal-header">
+        <h2 class="modal-title">Room 2: Timeline</h2>
+        <button id="btn-close-sala2">Close ✕</button>
+      </div>
+      <div class="timeline-placeholder">
+        [Room 2 Timeline structure in progress...]
+      </div>
+    </div>
+
+    <!-- Tap to Lock Pill -->
+    <div id="ui-hint">👆 Tap to lock</div>
+
+    <!-- Main Card -->
+    <div id="museum-card">
+      <span class="badge" id="card-badge">English</span>
+      <div id="dynamic-title"></div>
+      
+      <!-- Image Captions Button before main text -->
+      <button id="details-toggle">🖼️ View Image Captions</button>
+      <div id="details-content"></div>
+
+      <!-- Main text for each panel -->
+      <div id="dynamic-text"></div>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: ./minds/targets.mind; filterMinCF: 0.001; filterBeta: 0.001;" 
+             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-1" mindar-image-target="targetIndex: 1"></a-entity>
+      <a-entity id="target-2" mindar-image-target="targetIndex: 2"></a-entity>
+      <a-entity id="target-3" mindar-image-target="targetIndex: 3"></a-entity>
+      <a-entity id="target-4" mindar-image-target="targetIndex: 4"></a-entity>
+      <a-entity id="target-5" mindar-image-target="targetIndex: 5"></a-entity>
+      <a-entity id="target-6" mindar-image-target="targetIndex: 6"></a-entity>
+      <a-entity id="target-7" mindar-image-target="targetIndex: 7"></a-entity>
+      <a-entity id="target-8" mindar-image-target="targetIndex: 8"></a-entity>
+      <a-entity id="target-9" mindar-image-target="targetIndex: 9"></a-entity>
+      <a-entity id="target-10" mindar-image-target="targetIndex: 10"></a-entity>
+      <a-entity id="target-11" mindar-image-target="targetIndex: 11"></a-entity>
+      <a-entity id="target-12" mindar-image-target="targetIndex: 12"></a-entity>
+      <a-entity id="target-13" mindar-image-target="targetIndex: 13"></a-entity>
+    </a-scene>
+
+    <script>
+      let isFrozen = false;
+      const card = document.getElementById('museum-card');
+      const hint = document.getElementById('ui-hint');
+      const titleContainer = document.getElementById('dynamic-title');
+      const textContainer = document.getElementById('dynamic-text');
+      const detailsToggleBtn = document.getElementById('details-toggle');
+      const detailsContent = document.getElementById('details-content');
+      const panelSelector = document.getElementById('panel-selector');
+      
+      const modalSala2 = document.getElementById('modal-sala2');
+      const btnSala2 = document.getElementById('btn-sala2');
+      const btnCloseSala2 = document.getElementById('btn-close-sala2');
+
+      // PANEL TEXTS (ENGLISH)
+      const exhibitionData = {
+        0: { 
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 24px;">There is only one Earth</h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p>IN THE MIDDLE of the last century, a production model spread that promised greater comfort, well-being, and access to food for all people. However, this model came accompanied by an excessive use of agrochemicals, indiscriminate logging, water plundering, and pollution.</p>
+            <p>The promise to end hunger never came true. In El Salvador, 12 billion m³ of rainwater are lost due to deforestation and 4,500 hectares are logged every year. <strong>It is time to put life at the center.</strong></p>
+          `
+        },
+        1: { 
+          titleHTML: `<h1 class="wall-title" style="color: #ffffff; font-size: 22px;">With a single breath, millions of years of life are extinguished</h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p>All the complexity that the Earth holds is the spectacular result of a chain of transformations in which fire, water, wind, and rock particles conspired to bring us here.</p>
+            <p>• Volcanoes spat out lava, which upon cooling, formed the Earth's surface.<br>
+            • More meteorites filled the water with life, making aquatic creatures flourish.<br>
+            • Some crawled onto the ground to make it their home; and thus they evolved, each one from the rest of the species.<br>
+            • The wind took charge of spreading the seeds that propagated vegetation.</p>
+            <p>The Earth was completed 20 million years ago. It needed an incalculable amount of time to find balance, and in less than a century, humanity may be responsible for its extinction.</p>
+            <p>The responsibility to change course is shared; after all, the Earth will survive 4.5 billion more years and will know how to regenerate without humanity.</p>
+          `
+        },
+        2: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">E</span><span class="t2">A</span><span class="t3">R</span><span class="t4">T</span><span class="t5">H</span></h1>`,
+          detailsHTML: `
+            <p><strong>Looking at the Earth:</strong> Kinkajou or <em>martucha</em>: this mammal species inhabits the territories of Cabañas and Cinquera.</p>
+            <p><strong>Oxygen Harvest:</strong> El Imposible National Park: oxygen and good soil depend on vegetation, vegetation depends on water to nourish itself, and the creatures that inhabit it depend on water.</p>
+            <p><strong>Company at Home:</strong> Domestic ducks: they are part of the rural life of the territory. They share the home with pigs, chickens, goats, other barnyard animals, and, of course, people.</p>
+          `,
+          textHTML: `
+            <p><strong>Mother Earth</strong><br>LONG AGO, before becoming El Salvador, this territory was inhabited by native peoples. They name the place "Our Mother Earth" (<em>Tunan Tal</em>), where life is created and water is provided. Territorial data: 6,581,860 inhabitants in 21,041 km² ("The Little Thumb of America" / "<em>El Pulgarcito de América</em>"). 60.20% live in urban areas and 39.80% in rural areas.</p>
+            <p><strong>Skin that covers the Earth</strong><br>VEGETATION is to the planet what skin is to our bodies: it maintains the proper temperature, regenerates the air, protects water, and feeds. THE GREENERY eats carbon from the air, transforms it into food, leaves, and trunks; in return, it produces oxygen and cools the environment. IT SEEMS THAT NOW, the Earth is seen only as a "trunk full of resources," from which to take and take without limit, but what comes out of this trunk runs out, and without it life is not possible.</p>
+            <p><strong>Deforestation statistics:</strong> El Salvador does not have much nature to be proud of. It is the second most deforested country in Latin America.<br>
+            1. 22% of forests are logged annually.<br>
+            2. Only 37.9% is considered forested area (equivalent to 7,995 km²).<br>
+            3. Only 1% of the territory is a protected area, compared to the 10% that every country should have according to the Convention on Biological Diversity.</p>
+          `
+        },
+        3: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="t2">U</span><span class="t3">G</span><span class="t4">A</span><span class="t5">R</span><span class="t6">C</span><span class="t1">A</span><span class="t2">N</span><span class="t3">E</span></h1>`,
+          detailsHTML: `
+            <p><strong>Between sky and soil (Roots):</strong> embraced by the earth or carving tunnels, roots support the network of soils and transport nourishment.</p>
+            <p><strong>Life at the center (Iguanas in Cinquera):</strong> putting life at the center means caring for it, respecting its rhythms and its needs, and transforming our relationship with nature.</p>
+            <p><strong>Edible trees (Succulent branches):</strong> planting varied fruit trees ensures their benefits throughout the year, and for many years. They give shade and wood, and are a nutritional supplement of vitamins and minerals.</p>
+          `,
+          textHTML: `
+            <p><strong>Not so sweet, the sugarcane fields</strong><br>THE EARTH is like skin. If a body is dampened every day with insecticide, it is quite likely to end up getting sick. It keeps absorbing all the toxins that water it. The poison accumulates until one day it becomes infertile and dies.</p>
+            <p><strong>Sugarcane plantations with industrial logic:</strong> they devastate lands and bring respiratory diseases due to burning and the use of agrochemicals. With so much poison, the epidemic of kidney failure striking these municipalities is no surprise. Extensive crops use large amounts of groundwater, leaving communities in drought.</p>
+            <p>THE DERIVATIVES of sugarcane juice offered by a traditional <em>trapiche</em> (artisan sugar mill) are natural and free of agrochemicals. Production is artisanal, small-scale, and requires no burning to harvest; furthermore, it promotes local consumption.</p>
+          `
+        },
+        4: { 
+          titleHTML: `<h1 class="wall-title"><span class="t1">S</span><span class="t2">O</span><span class="t3">I</span><span class="t4">L</span><span class="t5">S</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Soils to eat</strong><br>LOOKING AT THE COUNTRYSIDE, one can glimpse how agribusiness is destroying the territory. It deteriorates it and fails to meet the food needs of the majority.</p>
+            <p><strong>La Milpa:</strong> Beans, corn, chili, <em>ayote</em> (squash). Plants, grains, and fruits are sown together, nourishing one another. This ancestral practice ensures the harvest, a varied diet, and the good use of the land.</p>
+            <p><strong>Local initiatives and nature:</strong> Sugarcane cultivation and traditional <em>trapiche</em> in San Antonio, Municipality of Suchitoto. With this initiative, a tradition is maintained that promotes crop sovereignty and offers healthy products to the community.</p>
+          `
+        },
+        5: { 
+          titleHTML: `<h1 class="wall-title"><span class="f1">F</span><span class="f2">I</span><span class="f3">R</span><span class="f4">E</span></h1>`,
+          detailsHTML: `
+            <p><strong>Izalco Volcano:</strong> considered the youngest in the territory, it is located south of Santa Ana. Sailors who anchored in Acajutla called it the "Lighthouse of the Pacific."</p>
+            <p><strong>The protective soil (Fungi):</strong> their rapid growth and underground branching make fungi good transporters of mineral nutrients to plant roots.</p>
+            <p><strong>Lava:</strong> the molten liquid, composed of heavy metals, moves within the solid core of the landmass. In the heart of the Earth, the heat is so intense that rocks and gases fuse together.</p>
+          `,
+          textHTML: `
+            <p><strong>Burns and devastates</strong><br>In the month of April, burning brush during the corn season or for clearing sugarcane (<em>roza de la caña</em>) are widespread practices. THE FIRE burns the brush, but it also kills millions of tiny organisms that nourish the earth. Fire causes soils to lose moisture, nutrients disintegrate, and the land becomes infertile. Without fertility, soils are flooded with chemicals that end up damaging them completely: the death of the earth is accelerated and food becomes scarce.</p>
+            <p><strong>The organisms that work on fertility:</strong><br>
+            • <strong>Fungi:</strong> decompose matter and hold back harmful organisms.<br>
+            • <strong>Bacteria:</strong> break down organic matter and release minerals for plants.<br>
+            • <strong>Earthworms:</strong> dig tunnels through which oxygen enters and nutrients are transported.<br>
+            An alternative for protection against fire is to replace large monoculture fields with mosaic crops of varied plants.</p>
+            <p><strong>Fuels and mining</strong><br>Fossil fuels (coal, oil, and natural gas) come from the millennial decomposition of organic matter. Because they are resources that run out and are difficult to renew, their use creates a serious sustainability problem.<br>
+            • <strong>Mining impact:</strong> Entails irreversible damage translated into global overheating and socioeconomic impact.<br>
+            • <strong>Energy and soils:</strong> Geothermal energy harnesses the heat of rocks. Meanwhile, volcanic soils are rich for cultivation because fragments from an eruption erode and release nutrients.</p>
+          `
+        },
+        6: { 
+          titleHTML: `<h1 class="wall-title"><span class="f1">H</span><span class="f2">E</span><span class="f3">A</span><span class="f4">T</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Heat that transforms and nourishes</strong><br>A TRANSFORMATIVE and sacred element in almost every culture. From this primordial element arises the creation of the planet and the possibility of making food something more than mere survival.</p>
+            <p>• <strong>Fire in community:</strong> Cooking food made it possible to optimize its nutrients, make the act of eating more sociable, enable migration, and forge identities through food.<br>
+            • <strong>Evolutionary leap:</strong> The control of fire by <em>Homo Erectus</em> 800,000 years ago meant surviving the cold and strengthening social interactions and language.<br>
+            • <strong>Primitive cooking:</strong> Humanity went from roasting meat and fish to using clay vessels to boil and prepare soups, which increased calories, softened food, and improved life expectancy.<br>
+            • <strong>Friendly alternatives:</strong> Faced with the uncontrollable consumption of plastic, there are options kinder to the environment such as clay utensils, gourd bowls (<em>guacales de morro</em>), garden leaves, or natural fiber baskets.</p>
+          `
+        },
+        7: { 
+          titleHTML: `<h1 class="wall-title"><span class="a1">A</span><span class="a2">I</span><span class="a3">R</span></h1>`,
+          detailsHTML: `
+            <p><strong>Balance in flight (Busy sky):</strong> birds, airplanes, and helicopters use the same aerial highways; but the increase in "iron birds" increasingly affects the flight of birds.</p>
+            <p><strong>The scent of the wind (Purification):</strong> green fortresses are needed—forests through which the earth can breathe and clean the foul odors caused by industry.</p>
+            <p><strong>The fragility of the environment (Cotton):</strong> this fluffy fiber was already used by native peoples. It is one of the most polluting crops. It requires large amounts of herbicides and water. However, it is possible to obtain it using organic farming techniques.</p>
+            <p><strong>Some sting flowers (Mosquitoes / <em>Zancudos</em>):</strong> these annoying little bugs are also attracted to flowers and suck their nectar. There is not much evidence regarding the importance they have in food chains. Rising global temperatures facilitate their reproduction.</p>
+          `,
+          textHTML: `
+            <p><strong>The routes of the wind</strong><br>ALL elements of nature influence agriculture and have an impact on food. Winds are pathways along which birds travel, determining their migration and the dispersal of seeds.</p>
+            <p>• <strong>Gentle wind:</strong> Rocks the plants, giving strength to their trunks, guides water toward the atmosphere, and transports pollen and seeds.<br>
+            • <strong>Strong wind:</strong> Breaks branches, prevents pollination by bees, and, if it passes through areas with pesticides, spreads toxins to nearby places.<br>
+            Without natural barriers like forests, erosion destroys the soil in a matter of hours and it becomes unrecoverable. Furthermore, tropical rainforests, with the help of the wind, manufacture and distribute rains across the continent: if they are left without trees, the rains disappear.</p>
+            <p><strong>City and noise pollution</strong><br>Urban traffic keeps increasing and pollution causes many respiratory diseases. If noise pollution is added to this, the outlook is bleak: the city gets sick and becomes aggressive toward nature and the health of those who inhabit it.<br>
+            • <strong>Noise pollution:</strong> Accumulated noise in homes, streets, and businesses exceeds the levels a person should endure, affecting physical and mental health, causing anxiety and hearing loss at an early age.</p>
+          `
+        },
+        8: { 
+          titleHTML: `<h1 class="wall-title" style="font-size: 24px;"><span class="a1">G</span><span class="a2">r</span><span class="a3">e</span><span class="a4">e</span><span class="a1">n</span> <span class="a2">L</span><span class="a3">u</span><span class="a4">n</span><span class="a1">g</span><span class="a2">s</span></h1>`,
+          detailsHTML: `
+            <p><strong>Tropical rainforest:</strong> With every tree cut down, the animals and plants that inhabit it also disappear. The agribusiness of cattle, palm, and soy, limitless construction, and oil or mining projects are destroying the lungs of the Earth.</p>
+          `,
+          textHTML: `
+            <p><strong>A bad breath into the air</strong><br>THE CLIMATE has natural variations, but the scientific community warns of how human activities alter the elements that make up the air. The loss of tropical rainforests makes the rains disappear: the projected decrease is up to 90%.</p>
+            <p>TRANSPORT, livestock, industry, and waste produce harmful gases that alter temperatures and spread diseases such as Chagas or dengue. In addition, the melting of glaciers causes sea levels to rise and the waters devour the coastal territory.</p>
+            <p>In our region, climate change intensifies the "<em>canícula</em>" (mid-summer dry spell), causing prolonged droughts or intense rains that destroy more than half of the corn and bean harvests, affecting subsistence farming and causing a food crisis. From July to October, tropical storms and hurricanes overflow the Lempa and Grande de San Miguel rivers.<br>
+            • <strong>88.7%</strong> of the territory is considered a risk zone.<br>
+            • <strong>95.4%</strong> of the population is located in this risk territory.</p>
+          `
+        },
+        9: { 
+          titleHTML: `<h1 class="wall-title" style="font-size: 24px;"><span class="a1">P</span><span class="a2">o</span><span class="a3">l</span><span class="a4">l</span><span class="a1">i</span><span class="a2">n</span><span class="a3">a</span><span class="a4">t</span><span class="a1">i</span><span class="a2">o</span><span class="a3">n</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Bees and pollination</strong><br>HONEY on bread, a tortilla with beans, orange juice, or morning coffee: it is likely that some bees were involved in this breakfast. More than 75 percent of the world's crops depend on animals that transfer their pollen. Bees have been declared heritage by the UN as they are key to the cycles that keep the planet alive.</p>
+            <p>However, bees are in danger due to the loss of their home, diseases, parasites, and the use of pesticides that kill them. When spaces of diverse life are turned into vast expanses of monocultures, their source of sustenance breaks down.</p>
+            <p><strong>Pollination:</strong> insects suck the nectar from flowers and collect pollen with their legs, wings, and antennae. While the desired banquet takes place, pollen travels from the reproductive organ of one flower to the flower where it will germinate, making plants multiply across the earth.</p>
+          `
+        },
+        10: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">B</span><span class="w2">L</span><span class="w3">U</span><span class="w4">E</span> <span class="w1">P</span><span class="w2">L</span><span class="w3">A</span><span class="w4">N</span><span class="w1">E</span><span class="w2">T</span></h1>`,
+          detailsHTML: `
+            <p><strong>Blue Planet:</strong> from high above, the Blue Planet reveals the vast amount of water that envelops it. From space, everything appears calm and in harmony.</p>
+            <p><strong>Deep clarity (Oceans):</strong> they occupy the largest surface of the planet and host 250,000 species. Marine life enables the subsistence of coastal communities around the world.</p>
+            <p><strong>Mirror of Water (Olomega Lagoon):</strong> this protected natural area is the largest body of fresh water in the East. It is the reflection of vegetation that protects water and land, along with every species that inhabits it and feeds from it.</p>
+          `,
+          textHTML: `
+            <p><strong>Blue Planet and Cement</strong><br>MOST of the surface of this great blue marble is covered with water: 71% water, 29% continental landmass. 3% is fresh water suitable for human consumption and 97% is seas and oceans. From salt waters we obtain half of the oxygen we breathe, while marine plants absorb carbon dioxide. Coral extraction and mass fishing deteriorate this chain. Water is poorly distributed and its misuse confronts us with a dry future. Pollution of the territory reaches groundwater, affecting its quality.</p>
+            <p>• <strong>Cement that sucks and dries:</strong> Cement acts like a plastic layer that prevents water infiltration. Underneath, vegetation and fertile lands die, and rivers dry up. After water, cement is the most widely used substance on Earth: it emits 4% to 8% of global carbon dioxide and requires a huge amount of water for its production.<br>
+            • <strong>Bad habits at home:</strong> Toilet leaks (100 to 1,000 liters per day), faucet leaks (800 liters per day), and the shower uses 26 liters per minute. In cities, water is wasted while in rural areas many people walk kilometers for a few liters a day. A family household uses 800 liters of water per day.</p>
+            <p><strong>Basins, Aquifers, and Pollution</strong><br>
+            • <strong>BASIN (<em>CUENCA</em>):</strong> the lands that guide rainwater toward different tributaries. They are formed through mountainous terrain, traveling from high areas to low areas.<br>
+            • <strong>AQUIFER (<em>ACUÍFERO</em>):</strong> Waters absorbed by the earth and stored in spaces without an outlet.<br>
+            The main supply of drinking water in the country comes from groundwater, which has better quality. However, this is not possible if the sources are filled with waste from large companies that extract water from community wells and then dump their waste into rivers. It is the people who inhabit these communities who hold the right to the wells and their clean water.<br>
+            • <strong>Poorly managed basins:</strong> Soils are not spongy enough, which makes it difficult for water to fill underground cavities. Surface water dries up and the flow of rivers becomes smaller and smaller.<br>
+            • <strong>Pig farms:</strong> Produce wastewater and excrement that sicken the environment. Animals are given high doses of copper, zinc, nitrogen, and phosphorus that accumulate in soils and destabilize ecosystems.</p>
+          `
+        },
+        11: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">W</span><span class="w2">A</span><span class="w3">T</span><span class="w4">E</span><span class="w1">R</span> <span class="w2">S</span><span class="w3">U</span><span class="w4">C</span><span class="w1">H</span><span class="w2">I</span><span class="w3">T</span><span class="w4">O</span><span class="w1">T</span><span class="w2">O</span></h1>`,
+          detailsHTML: `
+            <p><strong>The forms of water (Lempa River Basin):</strong> It is the most important in the region, but its high degree of pollution affects those who inhabit its banks.</p>
+            <p><strong>Inhabitants of the lake (Great Egret / <em>Garza Blanca</em> in Suchitlán):</strong> The placid waters of the reservoir welcome thousands of migratory birds.</p>
+            <p><strong>Shelter of springs (Springs / <em>Manantiales</em>):</strong> Through rivers and streams, water circulates in the earth, like blood through veins.</p>
+          `,
+          textHTML: `
+            <p><strong>Life drowns in the lake</strong><br>The Cerrón Grande hydroelectric dam is known as "Lake Suchitlán". Fed by the Lempa River and built in 1976, this intervention caused the displacement of thousands of people and broke the natural balance.<br>
+            • <strong>WATER HYACINTH (<em>Eichhornia crassipes</em>):</strong> Native to Brazil, it was introduced to clean the waters by absorbing nutrients and heavy metals. Being outside its natural habitat, it turned into an imbalance and its uncontrolled growth affects the entire reservoir.<br>
+            • <strong>TILAPIA:</strong> Functions like a strainer, swallowing waste and filth, which makes it poorly suited for consumption due to heavy metals.<br>
+            Suchitlán has a water surface of 13,500 hectares and its waters are shared with more than 100,000 people from Chalatenango, Cuscatlán, and Cabañas. Around 3,800 tons of garbage per year reach this lake, even though the site has been declared a "Wetland of International Importance."</p>
+            <p><strong>The water that Suchitoto drinks</strong><br>
+            <strong>WETLANDS (<em>HUMEDALES</em>):</strong> Transition zones inhabited by terrestrial and aquatic ecosystems that provide food, recharge groundwater, and control floods. No real protection measures are applied by either society or the State.<br>
+            The maintenance of aquifer recharge zones depends on the flow of the rivers that originate from two key hills:<br>
+            • <strong>Cerro Tecomatepeque:</strong> Altitude of 950 m.<br>
+            • <strong>Cerro Guazapa:</strong> Southwest of Suchitoto, elevation of 1,438 m, with tropical dry forest.<br>
+            From these hills originate 28 rivers and streams (<em>quebradas</em>) that empty into the Lempa River. Among the tributaries are: Los Limones, Chalchigüe, Quezalapa, Sinacapa, and Acelhuate. The most important and polluted one that drains into Suchitlán is the Acelhuate. Stopping the logging of trees is a basic action to conserve land and water.</p>
+            <p><strong>Forest data in Suchi:</strong><br>
+            22% Forested | 61% Partially Deforested | 17% Deforested.<br>
+            61% are supplied by a spring or river; 39% by wells.<br>
+            The Suquiapa and Sucio rivers, along with the others, carry waste from coffee processing plants (<em>beneficios de café</em>), sugar mills (<em>ingenios azucareros</em>), municipal slaughterhouses (<em>rastros municipales</em>), and sewage networks. Keeping the sources alive guarantees the flow, quality, and existence of groundwater.</p>
+          `
+        },
+        12: { 
+          titleHTML: `<h1 class="wall-title" style="font-size: 28px;"><span class="w1">W</span><span class="w2">A</span><span class="w3">T</span><span class="w4">E</span><span class="w1">R</span> <span class="w2">F</span><span class="w3">O</span><span class="w4">O</span><span class="w1">T</span><span class="w2">P</span><span class="w3">R</span><span class="w4">I</span><span class="w1">N</span><span class="w2">T</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Water needed for...</strong><br>PRODUCING on a large scale at a low cost means using irrigation systems and machinery that consume vast amounts of water. In these production chains, every drop used accounts for almost 70% of the global water footprint:<br>
+            <em>"Pastures or grains are irrigated, which will later be processed to feed animals. These animals are taken to the slaughterhouse, butchered, and packaged until they reach the supermarket."</em></p>
+            <p><strong>WATER FOOTPRINT?</strong> An environmental indicator that measures the fresh water used in the production process of an object, food, or service. It is a good starting point to raise awareness about effective water management.</p>
+            <p>• <strong>1 kg chicken:</strong> 4,300 liters<br>
+            • <strong>1 kg sugar:</strong> 750 liters<br>
+            • <strong>1 cup coffee:</strong> 840 liters<br>
+            • <strong>1 L milk:</strong> 1,000 liters<br>
+            • <strong>1 kg pork:</strong> 6,000 liters<br>
+            • <strong>1 kg beans:</strong> 1,800 liters<br>
+            • <strong>1 pair of pants:</strong> 10,850 liters<br>
+            • <strong>1 L beer:</strong> 300 liters<br>
+            • <strong>1 soda:</strong> 122 liters<br>
+            • <strong>1 kg beef:</strong> 15,000 liters</p>
+          `
+        },
+        13: { 
+          titleHTML: `<h1 class="wall-title"><span class="w1">W</span><span class="w2">A</span><span class="w3">T</span><span class="w4">E</span><span class="w1">R</span></h1>`,
+          detailsHTML: ``,
+          textHTML: `
+            <p><strong>Fish out of water</strong><br>IN THE RIVERBED of the Lempa River, varieties of species coexisted that were food for fishermen and part of the natural balance of aquatic fauna.</p>
+            <p>With the creation of the reservoir came the <strong>Tilapia</strong>. This predatory fish is not native to the area nor did it come with the riverbed: it was brought from afar and forced into the lake, flooding the waters, devouring native species, and generating an ecological disaster.</p>
+          `
+        }
+      };
+
+      detailsToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        detailsContent.classList.toggle('open');
+        detailsToggleBtn.innerText = detailsContent.classList.contains('open') ? '▲ Hide Image Captions' : '🖼️ View Image Captions';
+      });
+
+      function loadPanelData(index) {
+        const data = exhibitionData[index];
+        if (!data) return;
+
+        titleContainer.innerHTML = data.titleHTML;
+        textContainer.innerHTML = data.textHTML;
+        
+        if (data.detailsHTML && data.detailsHTML.trim() !== '') {
+          detailsContent.innerHTML = data.detailsHTML;
+          detailsToggleBtn.classList.add('visible');
+          detailsContent.classList.remove('open');
+          detailsToggleBtn.innerText = '🖼️ View Image Captions';
+        } else {
+          detailsContent.innerHTML = '';
+          detailsToggleBtn.classList.remove('visible');
+          detailsContent.classList.remove('open');
+        }
+
+        card.style.display = 'block';
+        card.scrollTop = 0;
+        hint.style.display = 'block';
+        hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+      }
+
+      let currentlyTrackedTarget = null; 
+      
+      function handleTargetFound(targetIndex) {
+        currentlyTrackedTarget = targetIndex;
+        if (!isFrozen) {
+          panelSelector.value = targetIndex; 
+          loadPanelData(targetIndex);
+        }
+      }
+
+      function handleTargetLost(targetIndex) {
+        if (currentlyTrackedTarget === targetIndex) {
+          currentlyTrackedTarget = null;
+        }
+        if (!isFrozen) {
+          card.style.display = 'none';
+          hint.style.display = 'none';
+          panelSelector.value = "";
+        }
+      }
+
+      const activeTargets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      activeTargets.forEach(i => {
+        let targetEl = document.getElementById('target-' + i);
+        if (targetEl) {
+          targetEl.addEventListener('targetFound', () => handleTargetFound(i));
+          targetEl.addEventListener('targetLost', () => handleTargetLost(i));
+        }
+      });
+
+      function toggleFreezeLock() {
+        if (card.style.display === 'block') {
+          isFrozen = !isFrozen;
+          
+          if (!isFrozen) {
+            if (currentlyTrackedTarget === null) {
+              card.style.display = 'none';
+              hint.style.display = 'none';
+              panelSelector.value = "";
+              return;
+            } else {
+              panelSelector.value = currentlyTrackedTarget;
+              loadPanelData(currentlyTrackedTarget);
+            }
+          }
+
+          card.style.borderTop = isFrozen ? "5px solid var(--cap-orange)" : "5px solid var(--cap-teal)";
+          hint.innerText = isFrozen ? "🔒 Locked (Tap to unlock)" : "👆 Tap to lock";
+        }
+      }
+
+      hint.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFreezeLock();
+      });
+
+      // Tap anywhere outside the card to lock/unlock screen
+      document.addEventListener('click', (e) => {
+        if (card.contains(e.target) || e.target.closest('#top-nav') || e.target.closest('#modal-sala2')) return;
+        toggleFreezeLock();
+      });
+
+      // Manual selection in dropdown menu
+      panelSelector.addEventListener('change', (e) => {
+        const selectedIndex = e.target.value;
+        if (selectedIndex !== "") {
+          isFrozen = true;
+          loadPanelData(selectedIndex);
+        } else {
+          isFrozen = false;
+          card.style.display = 'none';
+          hint.style.display = 'none';
+        }
+      });
+
+      btnSala2.addEventListener('click', () => {
+        modalSala2.classList.add('open');
+      });
+      
+      btnCloseSala2.addEventListener('click', () => {
+        modalSala2.classList.remove('open');
+      });
+    </script>
+  </body>
+</html>
